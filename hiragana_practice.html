@@ -281,7 +281,7 @@
         currentSetName = setName;
         const kanjiSelect = document.getElementById('kanjiSelect');
         kanjiSelect.innerHTML = kanjiDataSets[setName].map((item, i) => 
-            `<option value="${i}">${item.char}</option>`
+            `<option value="${i}">${item.char} - ${item.mean}</option>`
         ).join('');
         loadWord(0);
     }
