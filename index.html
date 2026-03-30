@@ -90,18 +90,10 @@
             text-align: center;
         }
 
-        .kanji-word {
-            font-size: 2.5rem;
-            font-family: 'Noto Sans JP', sans-serif;
-            font-weight: 700;
-            margin: 0;
-            color: var(--primary);
-            letter-spacing: 2px;
-        }
-
         .reading-text {
-            font-size: 1.1rem;
-            color: #7f8c8d;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
             margin: 5px 0;
         }
 
@@ -113,6 +105,7 @@
             border-radius: 50px;
             font-weight: bold;
             font-size: 0.95rem;
+            margin-bottom: 10px;
         }
 
         #writer-container {
@@ -163,7 +156,6 @@
 
         @media (max-width: 360px) {
             #writer-container { width: 240px; height: 240px; }
-            .kanji-word { font-size: 2rem; }
         }
     </style>
 </head>
@@ -185,7 +177,6 @@
 <main>
     <div class="card">
         <div class="info-section">
-            <h1 class="kanji-word" id="display-char">...</h1>
             <p class="reading-text" id="display-reading">...</p>
             <span class="meaning-badge" id="display-meaning">...</span>
         </div>
@@ -223,11 +214,6 @@
     async function fetchKanjiData() {
         const msg = document.getElementById('status-msg');
         try {
-            // ใช้ URL แบบ Absolute หรือจัดการ Path ให้ชัดเจน
-            // ในบางสภาพแวดล้อม 'data.json' อย่างเดียวอาจทำให้เกิด URL Parse Error
-            const url = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/data.json';
-            
-            // ลองดึงข้อมูลจาก Path ปกติก่อน
             const response = await fetch('./data.json').catch(() => fetch('data.json'));
             
             if (!response.ok) {
@@ -238,7 +224,6 @@
             initApp();
         } catch (error) {
             console.warn('Fetch error:', error.message);
-            // หากโหลดไฟล์ไม่ได้ ให้ใช้ข้อมูลสำรองเพื่อให้แอปยังทำงานได้
             kanjiDataSets = defaultData;
             msg.innerText = "ใช้ข้อมูลสำรอง (โหลดไฟล์ JSON ไม่สำเร็จ)";
             msg.style.color = "orange";
@@ -286,7 +271,6 @@
         currentCharInWordIdx = 0;
         const data = kanjiDataSets[currentSetName][currentWordIdx];
         
-        document.getElementById('display-char').innerText = data.char;
         document.getElementById('display-reading').innerText = `${data.hira} (${data.roma})`;
         document.getElementById('display-meaning').innerText = data.mean;
         document.getElementById('kanjiSelect').value = index;
@@ -306,9 +290,10 @@
             width: containerSize,
             height: containerSize,
             showCharacter: false,
-            showOutline: true,
+            showOutline: true, // ยังคงต้องเปิด Outline ไว้เพื่อให้ Quiz ทำงานได้
             drawingColor: '#2c3e50',
-            outlineColor: '#f1f2f6',
+            outlineColor: 'rgba(0,0,0,0)', // แก้ไขให้เป็นสีที่โปร่งใสจนมองไม่เห็น
+            outlineOpacity: 0,            // กำหนดค่าความโปร่งใสเป็น 0
             drawingWidth: 14,
             padding: 25
         });
@@ -322,7 +307,7 @@
         const totalChars = data.char.length;
         
         msg.innerText = totalChars > 1 
-            ? `กำลังเขียนตัวที่ ${currentCharInWordIdx + 1} (${data.char[currentCharInWordIdx]})` 
+            ? `กำลังเขียนตัวที่ ${currentCharInWordIdx + 1} จากทั้งหมด ${totalChars} ตัว` 
             : "ลากเส้นตามลำดับที่ถูกต้อง";
         msg.style.color = "var(--text-main)";
 
