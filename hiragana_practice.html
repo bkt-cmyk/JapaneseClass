@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hiragana Typing Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --success: #00b894;
+            --error: #d63031;
+            --warning: #fdcb6e;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Chakra Petch', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        header {
+            background: white;
+            padding: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .select-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .select-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            min-width: 80px;
+            color: #636e72;
+        }
+
+        select {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: #fff;
+            outline: none;
+            cursor: pointer;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 30px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .reading-hint { font-size: 1.1rem; color: #b2bec3; margin-bottom: 10px; }
+
+        .target-kanji {
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0 0 10px 0;
+            letter-spacing: -2px;
+        }
+
+        .meaning-badge {
+            display: inline-block;
+            background: #f0edff;
+            color: var(--primary);
+            padding: 8px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        #answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.8rem;
+            text-align: center;
+            border: 3px solid #dfe6e9;
+            border-radius: 15px;
+            outline: none;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: all 0.2s;
+        }
+
+        #answer-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+        }
+
+        #answer-input.correct {
+            border-color: var(--success);
+            background-color: rgba(0, 184, 148, 0.05);
+        }
+
+        #answer-input.wrong {
+            border-color: var(--error);
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .status-bar {
+            height: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-check { background: var(--primary); color: white; grid-column: span 2; }
+        .btn-hint { background: #f1f2f6; color: #636e72; }
+        .btn-next { background: #dfe6e9; color: #2d3436; }
+
+        button:active { transform: translateY(2px); filter: brightness(0.9); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .hidden-hint {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: var(--warning);
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="nav-container">
+        <div class="select-group">
+            <label>ชุดคำศัพท์:</label>
+            <select id="setSelect" onchange="loadSet(this.value)"></select>
+        </div>
+        <div class="select-group">
+            <label>เลือกคำ:</label>
+            <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="card" id="practice-card">
+        <div class="info-section">
+            <div class="reading-hint">พิมพ์คำอ่าน Hiragana:</div>
+            <h1 class="target-kanji" id="display-kanji">...</h1>
+            <span class="meaning-badge" id="display-meaning">...</span>
+        </div>
+
+        <div class="input-section">
+            <input type="text" id="answer-input" autocomplete="off" placeholder="答えは？" autofocus>
+            <div id="revealed-hint" class="hidden-hint"></div>
+        </div>
+
+        <div class="status-bar" id="status-msg">พร้อมแล้วหรือยัง?</div>
+
+        <div class="actions">
+            <button class="btn-check" id="check-btn" onclick="checkAnswer()">
+                ตรวจสอบคำตอบ (Enter)
+            </button>
+            <button class="btn-hint" onclick="showHint()">
+                <span>💡</span> เฉลย
+            </button>
+            <button class="btn-next" onclick="nextInSet()">
+                ข้ามคำนี้ <span>➔</span>
+            </button>
+        </div>
+    </div>
+</main>
+
+<script>
+    const defaultData = {
+        "ชุดคำศัพท์พื้นฐาน": [
+            { "char": "学校", "hira": "がっこう", "mean": "โรงเรียน" },
+            { "char": "先生", "hira": "せんせい", "mean": "คุณครู" },
+            { "char": "水", "hira": "みず", "mean": "น้ำ" },
+            { "char": "食べる", "hira": "たべる", "mean": "กิน" },
+            { "char": "日本語", "hira": "nihongo", "hira_real": "にほんご", "mean": "ภาษาญี่ปุ่น" }
+        ]
+    };
+
+    let kanjiDataSets = {};
+    let currentSetName = "";
+    let currentWordIdx = 0;
+    let isCorrect = false;
+
+    async function fetchKanjiData() {
+        try {
+            const response = await fetch('./data_hiragana.json').catch(() => fetch('data_hiragana.json'));
+            kanjiDataSets = response.ok ? await response.json() : defaultData;
+            initApp();
+        } catch (e) {
+            kanjiDataSets = defaultData;
+            initApp();
+        }
+    }
+
+    function initApp() {
+        const setSelect = document.getElementById('setSelect');
+        const setNames = Object.keys(kanjiDataSets);
+        setSelect.innerHTML = setNames.map(name => `<option value="${name}">${name}</option>`).join('');
+        if (setNames.length > 0) loadSet(setNames[0]);
+
+        // รองรับการกด Enter
+        document.getElementById('answer-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (isCorrect) nextInSet();
+                else checkAnswer();
+            }
+        });
+    }
+
+    function loadSet(setName) {
+        currentSetName = setName;
+        const kanjiSelect = document.getElementById('kanjiSelect');
+        kanjiSelect.innerHTML = kanjiDataSets[setName].map((item, i) => 
+            `<option value="${i}">${item.char}</option>`
+        ).join('');
+        loadWord(0);
+    }
+
+    function loadWord(index) {
+        currentWordIdx = parseInt(index);
+        isCorrect = false;
+        const data = kanjiDataSets[currentSetName][currentWordIdx];
+        
+        document.getElementById('display-kanji').innerText = data.char;
+        document.getElementById('display-meaning').innerText = data.mean;
+        document.getElementById('kanjiSelect').value = index;
+        
+        const input = document.getElementById('answer-input');
+        input.value = '';
+        input.className = '';
+        input.disabled = false;
+        input.focus();
+        
+        document.getElementById('status-msg').innerText = "พิมพ์คำอ่าน Hiragana ลงในช่อง";
+        document.getElementById('status-msg').style.color = "var(--text-main)";
+        document.getElementById('revealed-hint').style.display = "none";
+        document.getElementById('check-btn').innerText = "ตรวจสอบคำตอบ (Enter)";
+    }
+
+    function checkAnswer() {
+        const input = document.getElementById('answer-input');
+        const msg = document.getElementById('status-msg');
+        const userAnswer = input.value.trim();
+        const correctAnswer = kanjiDataSets[currentSetName][currentWordIdx].hira;
+
+        if (!userAnswer) return;
+
+        if (userAnswer === correctAnswer) {
+            isCorrect = true;
+            input.className = 'correct';
+            input.disabled = true;
+            msg.innerText = "ถูกต้องแล้ว! 🎉";
+            msg.style.color = "var(--success)";
+            document.getElementById('check-btn').innerText = "คำถัดไป (Enter)";
+        } else {
+            input.className = 'wrong';
+            msg.innerText = "ยังไม่ถูก ลองใหม่อีกครั้งนะ";
+            msg.style.color = "var(--error)";
+            setTimeout(() => {
+                if (!isCorrect) input.className = '';
+            }, 400);
+        }
+    }
+
+    function showHint() {
+        const hintDiv = document.getElementById('revealed-hint');
+        const correctAnswer = kanjiDataSets[currentSetName][currentWordIdx].hira;
+        hintDiv.innerText = `เฉลย: ${correctAnswer}`;
+        hintDiv.style.display = "block";
+    }
+
+    function nextInSet() {
+        const set = kanjiDataSets[currentSetName];
+        currentWordIdx = (currentWordIdx + 1) % set.length;
+        loadWord(currentWordIdx);
+    }
+
+    window.onload = fetchKanjiData;
+</script>
+
+</body>
+</html>
