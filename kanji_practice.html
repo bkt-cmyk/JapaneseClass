@@ -1,28 +1,23 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kanji Master App - Practice Mode</title>
+    <title>Kanji Practice</title>
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Noto+Sans+JP:wght@500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4a90e2;
-            --success: #2ecc71;
-            --error: #e74c3c;
-            --bg: #f0f2f5;
+            --primary: #6c5ce7;
+            --success: #00b894;
+            --error: #d63031;
+            --warning: #fdcb6e;
+            --bg: #f4f7f6;
             --card-bg: #ffffff;
-            --text-main: #2c3e50;
+            --text-main: #2d3436;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Chakra Petch', 'Noto Sans JP', sans-serif;
@@ -36,43 +31,43 @@
 
         header {
             background: white;
-            padding: 10px 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
-            width: 100%;
         }
 
         .nav-container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
         .select-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .select-group label {
-            font-size: 0.8rem;
-            font-weight: bold;
-            min-width: 70px;
-            color: #7f8c8d;
+            font-size: 0.85rem;
+            font-weight: 700;
+            min-width: 80px;
+            color: #636e72;
         }
 
         select {
             flex: 1;
-            padding: 8px;
-            border: 1.5px solid #dcdde1;
-            border-radius: 8px;
+            padding: 10px;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
             font-size: 0.9rem;
             background: #fff;
             outline: none;
+            cursor: pointer;
         }
 
         main {
@@ -86,63 +81,54 @@
         .card {
             background: var(--card-bg);
             width: 100%;
-            max-width: 400px;
-            padding: 25px;
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            max-width: 450px;
+            padding: 40px 30px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
             text-align: center;
-        }
-
-        .reading-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 5px 0;
+            transition: all 0.3s ease;
         }
 
         .meaning-badge {
             display: inline-block;
-            background: #e1f0ff;
+            background: #f0edff;
             color: var(--primary);
-            padding: 6px 16px;
+            padding: 12px 30px;
             border-radius: 50px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
         }
 
         #writer-container {
-            width: 280px;
-            height: 280px;
-            margin: 20px auto;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 20px auto;
             background: #fff;
-            border: 2px solid #f1f2f6;
-            border-radius: 16px;
+            border: 3px solid #dfe6e9;
+            border-radius: 20px;
             position: relative;
             touch-action: none;
         }
 
         .status-bar {
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-            padding: 0 10px;
+            height: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: color 0.3s;
         }
 
         .actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 15px;
         }
 
         button {
-            padding: 14px;
+            padding: 16px;
             border: none;
-            border-radius: 12px;
+            border-radius: 16px;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
@@ -150,216 +136,183 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .btn-hint {
-            background: #f1f2f6;
-            color: #7f8c8d;
-        }
+        .btn-hint { background: #f1f2f6; color: #636e72; }
+        .btn-next { background: var(--primary); color: white; grid-column: span 1; }
 
-        .btn-next {
-            background: var(--primary);
-            color: white;
-        }
+        button:active { transform: translateY(2px); filter: brightness(0.9); }
 
-        button:active {
-            transform: scale(0.96);
-        }
-
-        @media (max-width: 360px) {
-            #writer-container {
-                width: 240px;
-                height: 240px;
-            }
+        @media (max-width: 380px) {
+            #writer-container { width: 220px; height: 220px; }
         }
     </style>
 </head>
-
 <body>
 
-    <header>
-        <div class="nav-container">
-            <div class="select-group">
-                <label>ชุดคำศัพท์:</label>
-                <select id="setSelect" onchange="loadSet(this.value)"></select>
-            </div>
-            <div class="select-group">
-                <label>เลือกคำ:</label>
-                <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
-            </div>
+<header>
+    <div class="nav-container">
+        <div class="select-group">
+            <label>ชุดคำศัพท์:</label>
+            <select id="setSelect" onchange="loadSet(this.value)"></select>
         </div>
-    </header>
-
-    <main>
-        <div class="card">
-            <div class="info-section">
-                <p class="reading-text" id="display-reading">...</p>
-                <span class="meaning-badge" id="display-meaning">...</span>
-            </div>
-
-            <div id="writer-container"></div>
-
-            <div class="status-bar" id="status-msg">กำลังโหลดข้อมูล...</div>
-
-            <div class="actions">
-                <button class="btn-hint" onclick="writer.animateCharacter()">
-                    <span>💡</span> ลำดับขีด
-                </button>
-                <button class="btn-next" onclick="nextInSet()">
-                    คำถัดไป <span>➔</span>
-                </button>
-            </div>
+        <div class="select-group">
+            <label>เลือกคำ:</label>
+            <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
         </div>
-    </main>
+    </div>
+</header>
 
-    <script>
-        // ข้อมูลเริ่มต้นสำหรับสำรองกรณีโหลดไฟล์ JSON ไม่สำเร็จ (นำ roma ออกแล้ว)
-        const defaultData = {
-            "ชุดคำศัพท์พื้นฐาน (ตัวอย่าง)": [
-                { "char": "学校", "hira": "がっこう", "mean": "โรงเรียน" },
-                { "char": "先生", "hira": "せんせい", "mean": "คุณครู" }
-            ]
-        };
+<main>
+    <div class="card" id="practice-card">
+        <div class="info-section">
+            <span class="meaning-badge" id="display-meaning">...</span>
+        </div>
 
-        let kanjiDataSets = {};
-        let writer;
-        let currentSetName = "";
-        let currentWordIdx = 0;
-        let currentCharInWordIdx = 0;
+        <div id="writer-container"></div>
 
-        async function fetchKanjiData() {
-            const msg = document.getElementById('status-msg');
-            try {
-                const response = await fetch('./data_kanji.json').catch(() => fetch('data_kanji.json'));
+        <div class="status-bar" id="status-msg">พร้อมแล้วหรือยัง?</div>
 
-                if (!response.ok) {
-                    throw new Error('ไม่พบไฟล์ data_kanji.json');
-                }
-                kanjiDataSets = await response.json();
-                initApp();
-            } catch (error) {
-                kanjiDataSets = defaultData;
-                msg.innerText = "ใช้ข้อมูลสำรอง (โหลดไฟล์ JSON ไม่สำเร็จ)";
-                msg.style.color = "orange";
-                setTimeout(() => initApp(), 1500);
-            }
+        <div class="actions">
+            <button class="btn-hint" onclick="writer.animateCharacter()">
+                <span>💡</span> ลำดับขีด
+            </button>
+            <button class="btn-next" id="next-btn" onclick="nextInSet()">
+                ข้ามคำนี้ <span>➔</span>
+            </button>
+        </div>
+    </div>
+</main>
+
+<script>
+    const defaultData = {
+        "ชุดคำศัพท์พื้นฐาน": [
+            { "char": "学校", "data1": "がっこう", "mean": "โรงเรียน" },
+            { "char": "先生", "data1": "せんせい", "mean": "คุณครู" },
+            { "char": "水", "data1": "みず", "mean": "น้ำ" },
+            { "char": "食べる", "data1": "たべる", "mean": "กิน" },
+        ]
+    };
+
+    let kanjiDataSets = {};
+    let writer;
+    let currentSetName = "";
+    let currentWordIdx = 0;
+    let currentCharInWordIdx = 0;
+    let isWordComplete = false;
+
+    async function fetchKanjiData() {
+        try {
+            const response = await fetch('./data_kanji.json').catch(() => fetch('data_kanji.json'));
+            kanjiDataSets = response.ok ? await response.json() : defaultData;
+            initApp();
+        } catch (e) {
+            kanjiDataSets = defaultData;
+            initApp();
         }
+    }
 
-        function initApp() {
-            const setSelect = document.getElementById('setSelect');
-            const setNames = Object.keys(kanjiDataSets);
-            setSelect.innerHTML = '';
-            setNames.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.text = name;
-                setSelect.appendChild(opt);
-            });
-            if (setNames.length > 0) loadSet(setNames[0]);
-        }
+    function initApp() {
+        const setSelect = document.getElementById('setSelect');
+        const setNames = Object.keys(kanjiDataSets);
+        setSelect.innerHTML = setNames.map(name => `<option value="${name}">${name}</option>`).join('');
+        if (setNames.length > 0) loadSet(setNames[0]);
+    }
 
-        function loadSet(setName) {
-            if (!kanjiDataSets[setName]) return;
-            currentSetName = setName;
-            currentWordIdx = 0;
-            const kanjiSelect = document.getElementById('kanjiSelect');
-            kanjiSelect.innerHTML = '';
-            kanjiDataSets[setName].forEach((item, index) => {
-                const opt = document.createElement('option');
-                opt.value = index;
-                opt.text = `${item.char} - ${item.mean}`;
-                kanjiSelect.appendChild(opt);
-            });
-            loadWord(0);
-        }
+    function loadSet(setName) {
+        currentSetName = setName;
+        const kanjiSelect = document.getElementById('kanjiSelect');
+        kanjiSelect.innerHTML = kanjiDataSets[setName].map((item, i) => 
+            `<option value="${i}">${item.char} - ${item.mean}</option>`
+        ).join('');
+        loadWord(0);
+    }
 
-        function loadWord(index) {
-            currentWordIdx = parseInt(index);
-            currentCharInWordIdx = 0;
-            const data = kanjiDataSets[currentSetName][currentWordIdx];
+    function loadWord(index) {
+        currentWordIdx = parseInt(index);
+        currentCharInWordIdx = 0;
+        isWordComplete = false;
+        const data = kanjiDataSets[currentSetName][currentWordIdx];
+        
+        document.getElementById('display-meaning').innerText = data.mean;
+        document.getElementById('kanjiSelect').value = index;
+        document.getElementById('next-btn').innerHTML = 'ข้ามคำนี้ <span>➔</span>';
+        
+        setupWriterForChar();
+    }
 
-            // แก้ไขส่วนนี้ให้นำ (data.roma) ออก
-            document.getElementById('display-reading').innerText = `${data.hira}`;
-            document.getElementById('display-meaning').innerText = data.mean;
-            document.getElementById('kanjiSelect').value = index;
+    function setupWriterForChar() {
+        const data = kanjiDataSets[currentSetName][currentWordIdx];
+        const charToDraw = data.char[currentCharInWordIdx];
+        const container = document.getElementById('writer-container');
+        container.innerHTML = '';
+        
+        const size = container.offsetWidth - 10;
 
-            setupWriterForChar();
-        }
-
-        function setupWriterForChar() {
-            const data = kanjiDataSets[currentSetName][currentWordIdx];
-            const charToDraw = data.char[currentCharInWordIdx];
-            const container = document.getElementById('writer-container');
-            container.innerHTML = '';
-            const containerSize = container.offsetWidth || 280;
-
-            writer = HanziWriter.create('writer-container', charToDraw, {
-                width: containerSize,
-                height: containerSize,
-                showCharacter: false,
-                showOutline: true,
-                drawingColor: '#2c3e50',
-                outlineColor: 'rgba(0,0,0,0)',
-                outlineOpacity: 0,
-                drawingWidth: 14,
-                padding: 25
-            });
-
-            startQuiz();
-        }
-
-        function startQuiz() {
-            const msg = document.getElementById('status-msg');
-            const data = kanjiDataSets[currentSetName][currentWordIdx];
-            const totalChars = data.char.length;
-
-            msg.innerText = totalChars > 1
-                ? `กำลังเขียนตัวที่ ${currentCharInWordIdx + 1} จากทั้งหมด ${totalChars} ตัว`
-                : "ลากเส้นตามลำดับที่ถูกต้อง";
-            msg.style.color = "var(--text-main)";
-
-            writer.quiz({
-                onMistake: () => {
-                    msg.innerText = "ผิด! ลองใหม่อีกครั้ง";
-                    msg.style.color = "var(--error)";
-                },
-                onCorrectStroke: () => {
-                    msg.innerText = "ถูกต้อง! ต่อไป...";
-                    msg.style.color = "var(--success)";
-                },
-                onComplete: () => {
-                    if (currentCharInWordIdx < totalChars - 1) {
-                        msg.innerText = "เยี่ยม! ไปตัวถัดไป...";
-                        msg.style.color = "var(--primary)";
-                        setTimeout(() => {
-                            currentCharInWordIdx++;
-                            setupWriterForChar();
-                        }, 1000);
-                    } else {
-                        msg.innerText = "เขียนครบทั้งคำแล้ว! ยอดเยี่ยม ✨";
-                        msg.style.color = "var(--primary)";
-                        writer.showCharacter();
-                    }
-                }
-            });
-        }
-
-        function nextInSet() {
-            const currentSet = kanjiDataSets[currentSetName];
-            currentWordIdx = (currentWordIdx + 1) % currentSet.length;
-            loadWord(currentWordIdx);
-        }
-
-        window.addEventListener('resize', () => {
-            if (currentSetName && kanjiDataSets[currentSetName]) {
-                setupWriterForChar();
-            }
+        writer = HanziWriter.create('writer-container', charToDraw, {
+            width: size,
+            height: size,
+            showCharacter: false,
+            showOutline: false, // ปิดการแสดงเส้นร่าง
+            drawingColor: '#6c5ce7',
+            outlineColor: 'rgba(0,0,0,0)', // กำหนดสีเส้นร่างให้โปร่งใสสนิท
+            drawingWidth: 15,
+            padding: 25
         });
 
-        window.onload = fetchKanjiData;
-    </script>
+        startQuiz();
+    }
+
+    function startQuiz() {
+        const msg = document.getElementById('status-msg');
+        const data = kanjiDataSets[currentSetName][currentWordIdx];
+        const totalChars = data.char.length;
+
+        msg.innerText = totalChars > 1 
+            ? `เขียนตัวที่ ${currentCharInWordIdx + 1} / ${totalChars}`
+            : "ลากเส้นตามลำดับขีด";
+        msg.style.color = "var(--text-main)";
+
+        writer.quiz({
+            onMistake: () => {
+                msg.innerText = "ผิด! ลองใหม่อีกครั้ง";
+                msg.style.color = "var(--error)";
+            },
+            onCorrectStroke: () => {
+                msg.innerText = "ถูกต้อง! ต่อไป...";
+                msg.style.color = "var(--success)";
+            },
+            onComplete: () => {
+                if (currentCharInWordIdx < totalChars - 1) {
+                    msg.innerText = "ยอดเยี่ยม! ไปตัวถัดไป...";
+                    msg.style.color = "var(--primary)";
+                    setTimeout(() => {
+                        currentCharInWordIdx++;
+                        setupWriterForChar();
+                    }, 800);
+                } else {
+                    isWordComplete = true;
+                    msg.innerText = "เขียนครบทั้งคำแล้ว! ✨";
+                    msg.style.color = "var(--success)";
+                    document.getElementById('next-btn').innerHTML = 'คำถัดไป <span>➔</span>';
+                    writer.showCharacter();
+                }
+            }
+        });
+    }
+
+    function nextInSet() {
+        const set = kanjiDataSets[currentSetName];
+        currentWordIdx = (currentWordIdx + 1) % set.length;
+        loadWord(currentWordIdx);
+    }
+
+    window.onload = fetchKanjiData;
+    window.addEventListener('resize', () => {
+        if (writer) setupWriterForChar();
+    });
+</script>
 
 </body>
-
 </html>
