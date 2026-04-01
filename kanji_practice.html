@@ -75,14 +75,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .card {
             background: var(--card-bg);
             width: 100%;
-            max-width: 450px;
-            padding: 40px 30px;
+            max-width: 500px; /* ขยายความกว้างสูงสุดของ Card */
+            padding: 30px 20px;
             border-radius: 30px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.08);
             text-align: center;
@@ -93,24 +93,27 @@
             display: inline-block;
             background: #f0edff;
             color: var(--primary);
-            padding: 12px 30px;
+            padding: 10px 25px;
             border-radius: 50px;
             font-weight: 700;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
         }
 
         .reading-hint {
             display: block;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #636e72;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-weight: 500;
         }
 
+        /* ปรับขนาด Container ให้ยืดหยุ่นตามหน้าจอ โดยเฉพาะจอใหญ่ 6.7 นิ้ว */
         #writer-container {
-            width: 250px;
-            height: 250px;
+            width: 85vw; /* ใช้ 85% ของความกว้างหน้าจอ */
+            height: 85vw;
+            max-width: 380px; /* ไม่ให้ใหญ่เกินไปสำหรับ Desktop */
+            max-height: 380px;
             margin: 0 auto 20px auto;
             background: #fff;
             border: 3px solid #dfe6e9;
@@ -123,18 +126,18 @@
             height: 30px;
             font-weight: 700;
             font-size: 1rem;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             transition: color 0.3s;
         }
 
         .actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
 
         button {
-            padding: 16px;
+            padding: 14px;
             border: none;
             border-radius: 16px;
             font-size: 1rem;
@@ -144,16 +147,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .btn-hint { background: #f1f2f6; color: #636e72; }
-        .btn-next { background: var(--primary); color: white; grid-column: span 1; }
+        .btn-next { background: var(--primary); color: white; }
 
         button:active { transform: translateY(2px); filter: brightness(0.9); }
 
-        @media (max-width: 380px) {
-            #writer-container { width: 220px; height: 220px; }
+        /* ปรับแต่งสำหรับหน้าจอขนาดเล็กมาก */
+        @media (max-width: 350px) {
+            .meaning-badge { font-size: 1.2rem; }
+            #writer-container { width: 90vw; height: 90vw; }
         }
     </style>
 </head>
@@ -245,7 +250,7 @@
         const data = kanjiDataSets[currentSetName][currentWordIdx];
         
         document.getElementById('display-meaning').innerText = data.mean;
-        document.getElementById('display-reading').innerText = data.data1; // เพิ่มการแสดงคำอ่าน
+        document.getElementById('display-reading').innerText = data.data1;
         document.getElementById('kanjiSelect').value = index;
         document.getElementById('next-btn').innerHTML = 'ข้ามคำนี้ <span>➔</span>';
         
@@ -258,16 +263,17 @@
         const container = document.getElementById('writer-container');
         container.innerHTML = '';
         
-        const size = container.offsetWidth - 10;
+        // คำนวณขนาดใหม่ทุกครั้งที่โหลดตัวอักษรเพื่อให้พอดีกับ Container ที่เป็น %
+        const size = container.clientWidth - 6;
 
         writer = HanziWriter.create('writer-container', charToDraw, {
             width: size,
             height: size,
             showCharacter: false,
-            showOutline: false, // ปิดการแสดงเส้นร่าง
+            showOutline: false,
             drawingColor: '#6c5ce7',
-            outlineColor: 'rgba(0,0,0,0)', // กำหนดสีเส้นร่างให้โปร่งใสสนิท
-            drawingWidth: 15,
+            outlineColor: 'rgba(0,0,0,0)',
+            drawingWidth: 20, // เพิ่มขนาดเส้นให้เหมาะกับจอใหญ่
             padding: 25
         });
 
@@ -320,6 +326,7 @@
 
     window.onload = fetchKanjiData;
     window.addEventListener('resize', () => {
+        // เมื่อหมุนจอหรือเปลี่ยนขนาด ให้คำนวณพื้นที่เขียนใหม่
         if (writer) setupWriterForChar();
     });
 </script>
