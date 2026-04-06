@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kanji Practice</title>
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Noto+Sans+JP:wght@500;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary: #6c5ce7;
@@ -17,7 +20,10 @@
             --text-main: #2d3436;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
             font-family: 'Chakra Petch', 'Noto Sans JP', sans-serif;
@@ -32,7 +38,7 @@
         header {
             background: white;
             padding: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -81,10 +87,10 @@
         .card {
             background: var(--card-bg);
             width: 100%;
-            max-width: 500px; /* ขยายความกว้างสูงสุดของ Card */
+            max-width: 500px;
             padding: 30px 20px;
             border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
             text-align: center;
             transition: all 0.3s ease;
         }
@@ -108,11 +114,10 @@
             font-weight: 500;
         }
 
-        /* ปรับขนาด Container ให้ยืดหยุ่นตามหน้าจอ โดยเฉพาะจอใหญ่ 6.7 นิ้ว */
         #writer-container {
-            width: 85vw; /* ใช้ 85% ของความกว้างหน้าจอ */
+            width: 85vw;
             height: 85vw;
-            max-width: 380px; /* ไม่ให้ใหญ่เกินไปสำหรับ Desktop */
+            max-width: 380px;
             max-height: 380px;
             margin: 0 auto 20px auto;
             background: #fff;
@@ -120,6 +125,10 @@
             border-radius: 20px;
             position: relative;
             touch-action: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
         .status-bar {
@@ -148,188 +157,274 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            font-family: inherit;
         }
 
-        .btn-hint { background: #f1f2f6; color: #636e72; }
-        .btn-next { background: var(--primary); color: white; }
+        .btn-hint {
+            background: #f1f2f6;
+            color: #636e72;
+        }
 
-        button:active { transform: translateY(2px); filter: brightness(0.9); }
+        .btn-next {
+            background: var(--primary);
+            color: white;
+        }
 
-        /* ปรับแต่งสำหรับหน้าจอขนาดเล็กมาก */
+        button:active {
+            transform: translateY(2px);
+            filter: brightness(0.9);
+        }
+
         @media (max-width: 350px) {
-            .meaning-badge { font-size: 1.2rem; }
-            #writer-container { width: 90vw; height: 90vw; }
+            .meaning-badge {
+                font-size: 1.2rem;
+            }
+
+            #writer-container {
+                width: 90vw;
+                height: 90vw;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="nav-container">
-        <div class="select-group">
-            <label>ชุดคำศัพท์:</label>
-            <select id="setSelect" onchange="loadSet(this.value)"></select>
+    <header>
+        <div class="nav-container">
+            <div class="select-group">
+                <label>ชุดคำศัพท์:</label>
+                <select id="setSelect" onchange="loadSet(this.value)"></select>
+            </div>
+            <div class="select-group">
+                <label>เลือกคำ:</label>
+                <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
+            </div>
         </div>
-        <div class="select-group">
-            <label>เลือกคำ:</label>
-            <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
+    </header>
+
+    <main>
+        <div class="card" id="practice-card">
+            <div class="info-section">
+                <span class="meaning-badge" id="display-meaning">...</span>
+                <span class="reading-hint" id="display-reading">...</span>
+            </div>
+
+            <div id="writer-container"></div>
+
+            <div class="status-bar" id="status-msg">พร้อมแล้วหรือยัง?</div>
+
+            <div class="actions">
+                <button class="btn-hint" onclick="if(writer) writer.animateCharacter()">
+                    <span>💡</span> ลำดับขีด
+                </button>
+                <button class="btn-next" id="next-btn" onclick="nextInSet()">
+                    ข้ามคำนี้ <span>➔</span>
+                </button>
+            </div>
         </div>
-    </div>
-</header>
+    </main>
 
-<main>
-    <div class="card" id="practice-card">
-        <div class="info-section">
-            <span class="meaning-badge" id="display-meaning">...</span>
-            <span class="reading-hint" id="display-reading">...</span>
-        </div>
+    <script>
+        const defaultData = {
+            "ชุดคำศัพท์พื้นฐาน": [
+                { "char": "学校", "data1": "がっこう", "mean": "โรงเรียน" },
+                { "char": "先生", "data1": "せんせい", "mean": "คุณครู" },
+                { "char": "水", "data1": "みず", "mean": "น้ำ" },
+                { "char": "食べる", "data1": "たべる", "mean": "กิน" },
+                { "char": "歩く", "data1": "あるく", "mean": "เดิน" },
+                { "char": "悪い", "data1": "わるい", "mean": "เลว/แย่" }
+            ],
+            "ตัวเลข": [
+                { "char": "一", "data1": "いち", "mean": "หนึ่ง" },
+                { "char": "二", "data1": "に", "mean": "สอง" },
+                { "char": "三", "data1": "さん", "mean": "สาม" },
+                { "char": "四", "data1": "よん", "mean": "สี่" },
+                { "char": "五", "data1": "ご", "mean": "ห้า" }
+            ]
+        };
 
-        <div id="writer-container"></div>
+        let kanjiDataSets = {};
+        let writer;
+        let currentSetName = "";
+        let currentWordIdx = 0;
+        let currentCharInWordIdx = 0;
+        let isWordComplete = false;
 
-        <div class="status-bar" id="status-msg">พร้อมแล้วหรือยัง?</div>
+        /**
+         * ตัวโหลดข้อมูลตัวอักษรที่ได้รับการปรับปรุง:
+         * 1. ลองโหลดจากฐานข้อมูลคันจิญี่ปุ่น (jp) ก่อน
+         * 2. หากไม่พบ (404) จะลองโหลดจากฐานข้อมูลหลัก (cn/default)
+         * 3. หากไม่พบอีก จะแจ้ง Error ผ่าน Console เพื่อไม่ให้แอปค้าง
+         */
+        const charDataLoader = (char, onComplete, onErr) => {
+            // ลองโหลดจาก JP Database
+            fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data-jp@latest/${char}.json`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Not found in JP db');
+                    return res.json();
+                })
+                .then(onComplete)
+                .catch(() => {
+                    // ถ้าไม่พบใน JP ให้ลองหาใน Database ปกติ (Fallback)
+                    fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest/${char}.json`)
+                        .then(res => {
+                            if (!res.ok) throw new Error('Not found in any db');
+                            return res.json();
+                        })
+                        .then(onComplete)
+                        .catch(err => {
+                            console.error('ไม่พบข้อมูลสำหรับตัวอักษร:', char);
+                            if (onErr) onErr(err);
+                        });
+                });
+        };
 
-        <div class="actions">
-            <button class="btn-hint" onclick="writer.animateCharacter()">
-                <span>💡</span> ลำดับขีด
-            </button>
-            <button class="btn-next" id="next-btn" onclick="nextInSet()">
-                ข้ามคำนี้ <span>➔</span>
-            </button>
-        </div>
-    </div>
-</main>
-
-<script>
-    const defaultData = {
-        "ชุดคำศัพท์พื้นฐาน": [
-            { "char": "学校", "data1": "がっこう", "mean": "โรงเรียน" },
-            { "char": "先生", "data1": "せんせい", "mean": "คุณครู" },
-            { "char": "水", "data1": "みず", "mean": "น้ำ" },
-            { "char": "食べる", "data1": "たべる", "mean": "กิน" },
-        ]
-    };
-
-    let kanjiDataSets = {};
-    let writer;
-    let currentSetName = "";
-    let currentWordIdx = 0;
-    let currentCharInWordIdx = 0;
-    let isWordComplete = false;
-
-    async function fetchKanjiData() {
-        try {
-            const response = await fetch('./data_kanji.json').catch(() => fetch('data_kanji.json'));
-            kanjiDataSets = response.ok ? await response.json() : defaultData;
-            initApp();
-        } catch (e) {
-            kanjiDataSets = defaultData;
-            initApp();
-        }
-    }
-
-    function initApp() {
-        const setSelect = document.getElementById('setSelect');
-        const setNames = Object.keys(kanjiDataSets);
-        setSelect.innerHTML = setNames.map(name => `<option value="${name}">${name}</option>`).join('');
-        if (setNames.length > 0) loadSet(setNames[0]);
-    }
-
-    function loadSet(setName) {
-        currentSetName = setName;
-        const kanjiSelect = document.getElementById('kanjiSelect');
-        kanjiSelect.innerHTML = kanjiDataSets[setName].map((item, i) => 
-            `<option value="${i}">${item.char} - ${item.mean}</option>`
-        ).join('');
-        loadWord(0);
-    }
-
-    function loadWord(index) {
-        currentWordIdx = parseInt(index);
-        currentCharInWordIdx = 0;
-        isWordComplete = false;
-        const data = kanjiDataSets[currentSetName][currentWordIdx];
-        
-        document.getElementById('display-meaning').innerText = data.mean;
-        document.getElementById('display-reading').innerText = data.data1;
-        document.getElementById('kanjiSelect').value = index;
-        document.getElementById('next-btn').innerHTML = 'ข้ามคำนี้ <span>➔</span>';
-        
-        setupWriterForChar();
-    }
-
-    function setupWriterForChar() {
-        const data = kanjiDataSets[currentSetName][currentWordIdx];
-        const charToDraw = data.char[currentCharInWordIdx];
-        const container = document.getElementById('writer-container');
-        container.innerHTML = '';
-        
-        // คำนวณขนาดใหม่ทุกครั้งที่โหลดตัวอักษรเพื่อให้พอดีกับ Container ที่เป็น %
-        const size = container.clientWidth - 6;
-
-        writer = HanziWriter.create('writer-container', charToDraw, {
-            width: size,
-            height: size,
-            showCharacter: false,
-            showOutline: false,
-            drawingColor: '#6c5ce7',
-            outlineColor: 'rgba(0,0,0,0)',
-            drawingWidth: 20, // เพิ่มขนาดเส้นให้เหมาะกับจอใหญ่
-            padding: 25
-        });
-
-        startQuiz();
-    }
-
-    function startQuiz() {
-        const msg = document.getElementById('status-msg');
-        const data = kanjiDataSets[currentSetName][currentWordIdx];
-        const totalChars = data.char.length;
-
-        msg.innerText = totalChars > 1 
-            ? `เขียนตัวที่ ${currentCharInWordIdx + 1} / ${totalChars}`
-            : "ลากเส้นตามลำดับขีด";
-        msg.style.color = "var(--text-main)";
-
-        writer.quiz({
-            onMistake: () => {
-                msg.innerText = "ผิด! ลองใหม่อีกครั้ง";
-                msg.style.color = "var(--error)";
-            },
-            onCorrectStroke: () => {
-                msg.innerText = "ถูกต้อง! ต่อไป...";
-                msg.style.color = "var(--success)";
-            },
-            onComplete: () => {
-                if (currentCharInWordIdx < totalChars - 1) {
-                    msg.innerText = "ยอดเยี่ยม! ไปตัวถัดไป...";
-                    msg.style.color = "var(--primary)";
-                    setTimeout(() => {
-                        currentCharInWordIdx++;
-                        setupWriterForChar();
-                    }, 800);
-                } else {
-                    isWordComplete = true;
-                    msg.innerText = "เขียนครบทั้งคำแล้ว! ✨";
-                    msg.style.color = "var(--success)";
-                    document.getElementById('next-btn').innerHTML = 'คำถัดไป <span>➔</span>';
-                    writer.showCharacter();
-                }
+        async function fetchKanjiData() {
+            try {
+                const response = await fetch('data_kanji.json').catch(() => null);
+                kanjiDataSets = (response && response.ok) ? await response.json() : defaultData;
+                initApp();
+            } catch (e) {
+                kanjiDataSets = defaultData;
+                initApp();
             }
+        }
+
+        function initApp() {
+            const setSelect = document.getElementById('setSelect');
+            const setNames = Object.keys(kanjiDataSets);
+            setSelect.innerHTML = setNames.map(name => `<option value="${name}">${name}</option>`).join('');
+            if (setNames.length > 0) loadSet(setNames[0]);
+        }
+
+        function loadSet(setName) {
+            currentSetName = setName;
+            const kanjiSelect = document.getElementById('kanjiSelect');
+            kanjiSelect.innerHTML = kanjiDataSets[setName].map((item, i) =>
+                `<option value="${i}">${item.char} - ${item.mean}</option>`
+            ).join('');
+            loadWord(0);
+        }
+
+        function loadWord(index) {
+            currentWordIdx = parseInt(index);
+            currentCharInWordIdx = 0;
+            isWordComplete = false;
+            const data = kanjiDataSets[currentSetName][currentWordIdx];
+
+            document.getElementById('display-meaning').innerText = data.mean;
+            document.getElementById('display-reading').innerText = data.data1;
+            document.getElementById('kanjiSelect').value = index;
+            document.getElementById('next-btn').innerHTML = 'ข้ามคำนี้ <span>➔</span>';
+
+            setupWriterForChar();
+        }
+
+        function setupWriterForChar() {
+            const data = kanjiDataSets[currentSetName][currentWordIdx];
+            const charToDraw = data.char[currentCharInWordIdx];
+            const container = document.getElementById('writer-container');
+            const msg = document.getElementById('status-msg');
+            container.innerHTML = '';
+
+            // กรองเฉพาะตัวอักษรคันจิ (ข้ามฮิรางานะ/คาตาคานะ)
+            const isKanji = /[\u4e00-\u9faf]/.test(charToDraw);
+            if (!isKanji) {
+                if (currentCharInWordIdx < data.char.length - 1) {
+                    currentCharInWordIdx++;
+                    setupWriterForChar();
+                } else {
+                    handleWordComplete();
+                }
+                return;
+            }
+
+            const size = Math.min(container.clientWidth - 10, 380);
+
+            writer = HanziWriter.create('writer-container', charToDraw, {
+                width: size,
+                height: size,
+                showCharacter: false,
+                showOutline: true,
+                drawingColor: '#6c5ce7',
+                outlineColor: 'rgba(0, 0, 0, 0)',
+                drawingWidth: 20,
+                padding: 25,
+                strokeAnimationSpeed: 1,
+                delayBetweenStrokes: 100,
+                charDataLoader: charDataLoader
+            });
+
+            startQuiz();
+        }
+
+        function startQuiz() {
+            if (!writer) return;
+            const msg = document.getElementById('status-msg');
+            const data = kanjiDataSets[currentSetName][currentWordIdx];
+            const totalChars = data.char.length;
+
+            msg.innerText = totalChars > 1
+                ? `เขียนตัวที่ ${currentCharInWordIdx + 1} / ${totalChars}`
+                : "ลากเส้นตามลำดับขีด";
+            msg.style.color = "var(--text-main)";
+
+            writer.quiz({
+                onMistake: () => {
+                    msg.innerText = "ผิด! ลองใหม่อีกครั้ง";
+                    msg.style.color = "var(--error)";
+                },
+                onCorrectStroke: () => {
+                    msg.innerText = "ถูกต้อง! ต่อไป...";
+                    msg.style.color = "var(--success)";
+                },
+                onComplete: () => {
+                    // ค้นหาคันจิตัวถัดไปในคำ
+                    let nextIdx = currentCharInWordIdx + 1;
+                    while (nextIdx < data.char.length && !/[\u4e00-\u9faf]/.test(data.char[nextIdx])) {
+                        nextIdx++;
+                    }
+
+                    if (nextIdx < data.char.length) {
+                        msg.innerText = "ยอดเยี่ยม! ไปตัวถัดไป...";
+                        msg.style.color = "var(--primary)";
+                        setTimeout(() => {
+                            currentCharInWordIdx = nextIdx;
+                            setupWriterForChar();
+                        }, 800);
+                    } else {
+                        handleWordComplete();
+                    }
+                }
+            });
+        }
+
+        function handleWordComplete() {
+            const msg = document.getElementById('status-msg');
+            isWordComplete = true;
+            msg.innerText = "เขียนครบทั้งคำแล้ว! ✨";
+            msg.style.color = "var(--success)";
+            document.getElementById('next-btn').innerHTML = 'คำถัดไป <span>➔</span>';
+            if (writer) writer.showCharacter();
+        }
+
+        function nextInSet() {
+            const set = kanjiDataSets[currentSetName];
+            currentWordIdx = (currentWordIdx + 1) % set.length;
+            loadWord(currentWordIdx);
+        }
+
+        window.onload = fetchKanjiData;
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (writer) setupWriterForChar();
+            }, 300);
         });
-    }
-
-    function nextInSet() {
-        const set = kanjiDataSets[currentSetName];
-        currentWordIdx = (currentWordIdx + 1) % set.length;
-        loadWord(currentWordIdx);
-    }
-
-    window.onload = fetchKanjiData;
-    window.addEventListener('resize', () => {
-        // เมื่อหมุนจอหรือเปลี่ยนขนาด ให้คำนวณพื้นที่เขียนใหม่
-        if (writer) setupWriterForChar();
-    });
-</script>
+    </script>
 
 </body>
+
 </html>
