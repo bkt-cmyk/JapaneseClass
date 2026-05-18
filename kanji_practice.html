@@ -320,7 +320,19 @@
         function initApp() {
             const setSelect = document.getElementById('setSelect');
             const setNames = Object.keys(kanjiDataSets);
-            setSelect.innerHTML = setNames.map(name => `<option value="${name}">${name}</option>`).join('');
+            setSelect.innerHTML = setNames.map(name => {
+                // ดึงอาร์เรย์คำศัพท์ของชุดนั้นๆ ออกมา เช่น [{char: "一", ...}, {char: "二", ...}]
+                const currentSet = kanjiDataSets[name];
+
+                // ดึงเฉพาะตัวอักษร "char" ของทุกคำมารวมกันเป็นอาร์เรย์ใหม่ เช่น ["一", "二", "三", "四", "五"]
+                const charList = currentSet.map(item => item.char);
+
+                // นำตัวอักษรมารวมกัน คั่นด้วยเครื่องหมายจุลภาค (,)
+                const charString = charList.join(' ');
+
+                // ส่งคืน Tag <option> ที่มีข้อความพ่วงท้ายตามที่ต้องการ
+                return `<option value="${name}">${name}: ${charString}</option>`;
+            }).join('');
             if (setNames.length > 0) loadSet(setNames[0]);
         }
 
