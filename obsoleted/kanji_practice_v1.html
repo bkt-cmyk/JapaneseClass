@@ -7,25 +7,21 @@
     <title>ฝึกเขียนคันจิ</title>
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Zen+Maru+Gothic:wght@500;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            /* playful game-app palette: sunny cream + teal brand + coral CTA */
-            --bg: #fff6e4;
-            --card: #ffffff;
-            --ink: #2b2140;
-            --ink-soft: #6b5f84;
-            --brand: #17a398;
-            --brand-deep: #0e7a6e;
-            --pop: #ff6b4a;
-            --pop-deep: #d8542f;
-            --success: #3eaa5c;
-            --success-deep: #2c8548;
-            --error: #e64545;
-            --error-deep: #b93434;
-            --sand: #ffe8b8;
-            --line: #f0dfb8;
+            /* washi paper + sumi ink + hanko red */
+            --paper: #f3ede0;
+            --paper-deep: #e9e0cd;
+            --sumi: #24211c;
+            --sumi-soft: #5b564c;
+            --hanko: #b3401f;
+            --hanko-deep: #8f2f16;
+            --indigo: #2d4356;
+            --moss: #5c6e4f;
+            --line: #cdc2a6;
+            --card: #faf6ec;
         }
 
         * {
@@ -34,86 +30,47 @@
         }
 
         body {
-            font-family: 'Kanit', sans-serif;
+            font-family: 'Noto Sans Thai', sans-serif;
             background:
-                radial-gradient(circle at 8% 0%, rgba(23, 163, 152, 0.16), transparent 42%),
-                radial-gradient(circle at 96% 100%, rgba(255, 107, 74, 0.16), transparent 46%),
-                var(--bg);
+                radial-gradient(circle at 12% 8%, rgba(179, 64, 31, 0.05), transparent 40%),
+                radial-gradient(circle at 88% 92%, rgba(45, 67, 86, 0.06), transparent 42%),
+                var(--paper);
             margin: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            color: var(--ink);
+            color: var(--sumi);
         }
 
         header {
-            background: var(--bg);
-            padding: 16px 16px 10px;
+            background: var(--paper);
+            padding: 14px 16px 12px;
+            border-bottom: 1px solid var(--line);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 6px 12px -8px rgba(43, 33, 64, 0.18);
         }
 
         .brand-row {
             max-width: 460px;
-            margin: 0 auto 14px;
+            margin: 0 auto 12px;
             display: flex;
-            align-items: center;
+            align-items: baseline;
             gap: 10px;
         }
 
         .brand-row .kanji-mark {
-            width: 38px;
-            height: 38px;
-            flex: none;
-            border-radius: 12px;
-            background: var(--pop);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-family: 'Noto Serif JP', serif;
             font-weight: 700;
-            font-size: 1.15rem;
-            box-shadow: 0 3px 0 var(--pop-deep);
+            font-size: 1.4rem;
+            color: var(--hanko);
+            line-height: 1;
         }
 
         .brand-row .brand-text {
-            font-weight: 800;
-            font-size: 1.05rem;
-            color: var(--ink);
-        }
-
-        .progress-row {
-            max-width: 460px;
-            margin: 0 auto 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .progress-track {
-            flex: 1;
-            height: 12px;
-            background: var(--sand);
-            border-radius: 999px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--brand);
-            border-radius: 999px;
-            transition: width 0.3s ease;
-        }
-
-        .progress-count {
-            font-weight: 700;
-            font-size: 0.82rem;
-            color: var(--ink-soft);
-            min-width: 34px;
-            text-align: right;
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+            color: var(--sumi-soft);
         }
 
         .nav-container {
@@ -127,33 +84,32 @@
         .select-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .select-group label {
             font-size: 0.78rem;
             font-weight: 600;
             min-width: 74px;
-            color: var(--ink-soft);
+            color: var(--sumi-soft);
         }
 
         select {
             flex: 1;
-            padding: 9px 14px;
-            border: 2px solid var(--line);
-            border-radius: 999px;
-            font-size: 0.85rem;
+            padding: 9px 10px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            font-size: 0.88rem;
             font-family: inherit;
-            font-weight: 600;
             background: var(--card);
-            color: var(--ink);
+            color: var(--sumi);
             outline: none;
             cursor: pointer;
         }
 
         select:focus-visible,
         button:focus-visible {
-            outline: 3px solid var(--brand);
+            outline: 2px solid var(--indigo);
             outline-offset: 2px;
         }
 
@@ -162,16 +118,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 14px 14px 30px;
+            padding: 18px 14px 28px;
         }
 
         .card {
             background: var(--card);
             width: 100%;
             max-width: 440px;
-            padding: 24px 20px 22px;
-            border-radius: 28px;
-            box-shadow: 0 1px 0 var(--line), 0 16px 34px -20px rgba(43, 33, 64, 0.45);
+            padding: 26px 20px 22px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            box-shadow: 0 1px 2px rgba(36, 33, 28, 0.04), 0 12px 28px -18px rgba(36, 33, 28, 0.35);
             text-align: center;
         }
 
@@ -181,53 +138,49 @@
 
         .meaning-badge {
             display: inline-block;
-            background: var(--sand);
-            color: var(--pop-deep);
-            font-weight: 800;
-            font-size: 1.35rem;
-            padding: 6px 20px;
-            border-radius: 999px;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            color: var(--sumi);
+            font-weight: 700;
+            font-size: 1.5rem;
+            border-bottom: 3px solid var(--hanko);
+            padding-bottom: 3px;
         }
 
         .reading-hint {
             display: block;
-            font-family: 'Zen Maru Gothic', sans-serif;
-            font-weight: 700;
+            font-family: 'Noto Serif JP', serif;
             font-size: 1.05rem;
-            color: var(--ink-soft);
-            margin-top: 10px;
+            color: var(--sumi-soft);
+            margin-top: 8px;
         }
 
-        /* practice canvas: dashed centerline target instead of literal manuscript grid,
-           reads as a game "drop zone" while still giving a stroke-alignment guide */
+        /* genkouyoushi manuscript-paper grid: thematically the real writing grid, not decoration */
         #writer-container {
-            width: 78vw;
-            height: 78vw;
-            max-width: 320px;
-            max-height: 320px;
+            width: 82vw;
+            height: 82vw;
+            max-width: 340px;
+            max-height: 340px;
             margin: 0 auto 18px auto;
-            background: #fffdf7;
-            border: 3px solid var(--brand);
-            border-radius: 24px;
+            background: #fffdf8;
+            border: 1.5px solid var(--sumi);
+            border-radius: 4px;
             position: relative;
             touch-action: none;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            box-shadow: 0 5px 0 var(--brand-deep);
         }
 
         #writer-container::before {
             content: "";
             position: absolute;
-            inset: 14px;
-            border-radius: 14px;
+            inset: 0;
             background-image:
-                linear-gradient(90deg, transparent 49%, var(--line) 50%, transparent 51%),
-                linear-gradient(180deg, transparent 49%, var(--line) 50%, transparent 51%);
-            background-size: 100% 100%;
-            opacity: 0.9;
+                linear-gradient(90deg, transparent 49.4%, var(--line) 50%, transparent 50.6%),
+                linear-gradient(180deg, transparent 49.4%, var(--line) 50%, transparent 50.6%),
+                linear-gradient(45deg, transparent 49.7%, rgba(205, 194, 166, 0.55) 50%, transparent 50.3%),
+                linear-gradient(-45deg, transparent 49.7%, rgba(205, 194, 166, 0.55) 50%, transparent 50.3%);
             pointer-events: none;
             z-index: 0;
         }
@@ -237,92 +190,53 @@
             z-index: 1;
         }
 
-        .status-chip {
-            display: inline-block;
-            min-width: 180px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            padding: 8px 18px;
-            border-radius: 999px;
+        .status-bar {
+            height: 22px;
+            font-family: 'Noto Sans Thai', sans-serif;
+            font-weight: 600;
+            font-size: 0.92rem;
             margin-bottom: 16px;
-            background: var(--sand);
-            color: var(--ink-soft);
-            transition: background 0.2s, color 0.2s, transform 0.15s;
-        }
-
-        .status-chip.state-success {
-            background: #dff3e4;
-            color: var(--success-deep);
-        }
-
-        .status-chip.state-error {
-            background: #fbdede;
-            color: var(--error-deep);
-        }
-
-        .status-chip.state-info {
-            background: #d9f0ee;
-            color: var(--brand-deep);
-        }
-
-        .status-chip.pop {
-            animation: chip-pop 0.35s ease;
-        }
-
-        @keyframes chip-pop {
-            0% {
-                transform: scale(1);
-            }
-
-            40% {
-                transform: scale(1.08);
-            }
-
-            100% {
-                transform: scale(1);
-            }
+            transition: color 0.2s;
         }
 
         .actions {
             display: grid;
-            grid-template-columns: auto 1fr 1.3fr;
+            grid-template-columns: auto 1fr 1fr;
             gap: 10px;
         }
 
         button {
-            padding: 14px 12px;
+            padding: 12px;
             border: none;
-            border-radius: 999px;
+            border-radius: 8px;
             font-size: 0.92rem;
-            font-weight: 700;
+            font-weight: 600;
             font-family: inherit;
             cursor: pointer;
-            transition: transform 0.08s, box-shadow 0.08s, filter 0.15s;
+            transition: filter 0.15s, transform 0.05s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 7px;
         }
 
-        .btn-prev {
-            background: var(--card);
-            color: var(--brand-deep);
-            border: 2px solid var(--line);
-            padding-left: 16px;
-            padding-right: 16px;
-            box-shadow: 0 4px 0 var(--line);
+        .btn-hint {
+            background: var(--paper-deep);
+            color: var(--sumi);
+            border: 1px solid var(--line);
         }
 
-        .btn-hint {
-            background: #eaf6f4;
-            color: var(--brand-deep);
-            box-shadow: 0 4px 0 #c7e6e1;
+        .btn-prev {
+            background: var(--paper-deep);
+            color: var(--indigo);
+            border: 1px solid var(--line);
+            padding-left: 14px;
+            padding-right: 14px;
         }
 
         .btn-next {
-            background: var(--pop);
-            color: #fff;
-            box-shadow: 0 4px 0 var(--pop-deep);
+            background: var(--hanko);
+            color: #fdf6ec;
         }
 
         button:hover {
@@ -330,27 +244,24 @@
         }
 
         button:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 transparent !important;
+            transform: translateY(1px);
+            filter: brightness(0.94);
         }
 
         @media (max-width: 350px) {
             .meaning-badge {
-                font-size: 1.15rem;
+                font-size: 1.25rem;
             }
 
             #writer-container {
-                width: 86vw;
-                height: 86vw;
+                width: 88vw;
+                height: 88vw;
             }
         }
 
         @media (prefers-reduced-motion: reduce) {
-
-            *,
-            .status-chip.pop {
+            * {
                 transition: none !important;
-                animation: none !important;
             }
         }
     </style>
@@ -362,12 +273,6 @@
         <div class="brand-row">
             <span class="kanji-mark">書</span>
             <span class="brand-text">ฝึกลำดับขีดคันจิ</span>
-        </div>
-        <div class="progress-row">
-            <div class="progress-track">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-            <span class="progress-count" id="progress-count">0/0</span>
         </div>
         <div class="nav-container">
             <div class="select-group">
@@ -390,7 +295,7 @@
 
             <div id="writer-container"></div>
 
-            <div class="status-chip state-neutral" id="status-msg">พร้อมแล้วหรือยัง?</div>
+            <div class="status-bar" id="status-msg">พร้อมแล้วหรือยัง?</div>
 
             <div class="actions">
                 <button class="btn-prev" onclick="prevInSet()" aria-label="คำก่อนหน้า">
@@ -504,34 +409,13 @@
             document.getElementById('kanjiSelect').value = index;
             document.getElementById('next-btn').innerHTML = 'ข้ามคำนี้ <span>→</span>';
 
-            updateProgress();
             setupWriterForChar();
-        }
-
-        function updateProgress() {
-            const set = kanjiDataSets[currentSetName];
-            const total = set.length;
-            const pct = total > 0 ? ((currentWordIdx + 1) / total) * 100 : 0;
-            document.getElementById('progress-fill').style.width = pct + '%';
-            document.getElementById('progress-count').innerText = `${currentWordIdx + 1}/${total}`;
-        }
-
-        function setStatus(text, state) {
-            const msg = document.getElementById('status-msg');
-            msg.innerText = text;
-            msg.className = 'status-chip state-' + state;
-            void msg.offsetWidth;
-            msg.classList.add('pop');
         }
 
         function setupWriterForChar() {
             const data = kanjiDataSets[currentSetName][currentWordIdx];
             const charToDraw = data.char[currentCharInWordIdx];
             const container = document.getElementById('writer-container');
-
-            if (writer && typeof writer.cancelQuiz === 'function') {
-                try { writer.cancelQuiz(); } catch (e) { /* no active quiz to cancel */ }
-            }
             container.innerHTML = '';
 
             const isKanji = /[\u4e00-\u9faf]/.test(charToDraw);
@@ -545,15 +429,15 @@
                 return;
             }
 
-            const size = Math.min(container.clientWidth - 10, 320);
+            const size = Math.min(container.clientWidth - 10, 340);
 
             writer = HanziWriter.create('writer-container', charToDraw, {
                 width: size,
                 height: size,
                 showCharacter: false,
                 showOutline: true,
-                drawingColor: '#2b2140',
-                outlineColor: 'rgba(43, 33, 64, 0)',
+                drawingColor: '#24211c',
+                outlineColor: 'rgba(0, 0, 0, 0)',
                 drawingWidth: 18,
                 padding: 22,
                 strokeAnimationSpeed: 1,
@@ -566,20 +450,23 @@
 
         function startQuiz() {
             if (!writer) return;
+            const msg = document.getElementById('status-msg');
             const data = kanjiDataSets[currentSetName][currentWordIdx];
             const totalChars = data.char.length;
 
-            setStatus(
-                totalChars > 1 ? `เขียนตัวที่ ${currentCharInWordIdx + 1} / ${totalChars}` : "ลากเส้นตามลำดับขีด",
-                'neutral'
-            );
+            msg.innerText = totalChars > 1
+                ? `เขียนตัวที่ ${currentCharInWordIdx + 1} / ${totalChars}`
+                : "ลากเส้นตามลำดับขีด";
+            msg.style.color = "var(--sumi-soft)";
 
             writer.quiz({
                 onMistake: () => {
-                    setStatus("ผิด! ลองใหม่อีกครั้ง", 'error');
+                    msg.innerText = "ผิด! ลองใหม่อีกครั้ง";
+                    msg.style.color = "var(--hanko-deep)";
                 },
                 onCorrectStroke: () => {
-                    setStatus("ถูกต้อง! ต่อไป...", 'success');
+                    msg.innerText = "ถูกต้อง! ต่อไป...";
+                    msg.style.color = "var(--moss)";
                 },
                 onComplete: () => {
                     let nextIdx = currentCharInWordIdx + 1;
@@ -588,7 +475,8 @@
                     }
 
                     if (nextIdx < data.char.length) {
-                        setStatus("ยอดเยี่ยม! ไปตัวถัดไป...", 'info');
+                        msg.innerText = "ยอดเยี่ยม! ไปตัวถัดไป...";
+                        msg.style.color = "var(--indigo)";
                         setTimeout(() => {
                             currentCharInWordIdx = nextIdx;
                             setupWriterForChar();
@@ -601,23 +489,17 @@
         }
 
         function handleWordComplete() {
+            const msg = document.getElementById('status-msg');
             isWordComplete = true;
-            setStatus("เขียนครบทั้งคำแล้ว ✓", 'success');
-            document.getElementById('next-btn').innerHTML = 'คำถัดไป <span>→</span>';
+            msg.innerText = "เขียนครบทั้งคำแล้ว ✓";
+            msg.style.color = "var(--moss)";
 
-            // deferred to the next tick so the mouseup/touchend that just completed
-            // the last stroke finishes processing before we mutate the writer's DOM
-            const completedWriter = writer;
-            setTimeout(() => {
-                if (completedWriter) {
-                    completedWriter.showCharacter();
-                    completedWriter.updateColor('drawingColor', { color: '#3eaa5c', duration: 300 });
-                }
-            }, 0);
+            document.getElementById('next-btn').innerHTML = 'คำถัดไป <span>→</span>';
+            if (writer) writer.showCharacter();
 
             const set = kanjiDataSets[currentSetName];
             if (set.length > 1) {
-                autoAdvanceTimer = setTimeout(nextInSet, 1200);
+                autoAdvanceTimer = setTimeout(nextInSet, 1000);
             }
         }
 
