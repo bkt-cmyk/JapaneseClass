@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ฝึกเขียนคันจิ</title>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/kanji.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-row">
+            <span class="kanji-mark">書</span>
+            <span class="brand-text">ฝึกลำดับขีดคันจิ</span>
+        </div>
+        <div class="progress-row">
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-count" id="progress-count">0/0</span>
+        </div>
+        <div class="nav-container">
+            <div class="select-group">
+                <label for="setSelect">ชุดคำศัพท์</label>
+                <select id="setSelect" onchange="loadSet(this.value)"></select>
+            </div>
+            <div class="select-group">
+                <label for="kanjiSelect">เลือกคำ</label>
+                <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="card" id="practice-card">
+            <div class="info-section">
+                <span class="meaning-badge" id="display-meaning">...</span>
+                <span class="reading-hint" id="display-reading">...</span>
+            </div>
+
+            <div id="writer-container"></div>
+
+            <div class="status-chip state-neutral" id="status-msg">พร้อมแล้วหรือยัง?</div>
+
+            <div class="actions">
+                <button class="btn-prev" onclick="prevInSet()" aria-label="คำก่อนหน้า">
+                    <span>←</span>
+                </button>
+                <button class="btn-hint" onclick="if(writer) writer.animateCharacter()">
+                    <span>筆</span> ลำดับขีด
+                </button>
+                <button class="btn-next" id="next-btn" onclick="nextInSet()">
+                    ข้ามคำนี้ <span>→</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/kanji.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+:root {
+            --primary: #6c5ce7;
+            --success: #00b894;
+            --error: #d63031;
+            --warning: #fdcb6e;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Chakra Petch', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        header {
+            background: white;
+            padding: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .select-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .select-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            min-width: 80px;
+            color: #636e72;
+        }
+
+        select {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: #fff;
+            outline: none;
+            cursor: pointer;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 30px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .reading-hint { font-size: 1.1rem; color: #b2bec3; margin-bottom: 10px; }
+
+        .meaning-badge {
+            display: inline-block;
+            background: #f0edff;
+            color: var(--primary);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        #answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.8rem;
+            text-align: center;
+            border: 3px solid #dfe6e9;
+            border-radius: 15px;
+            outline: none;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: all 0.2s;
+        }
+
+        #answer-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+        }
+
+        #answer-input.correct {
+            border-color: var(--success);
+            background-color: rgba(0, 184, 148, 0.05);
+        }
+
+        #answer-input.wrong {
+            border-color: var(--error);
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-check { background: var(--primary); color: white; grid-column: span 2; }
+        .btn-hint { background: #f1f2f6; color: #636e72; }
+        .btn-next { background: #dfe6e9; color: #2d3436; }
+
+        button:active { transform: translateY(2px); filter: brightness(0.9); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .hidden-hint {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: var(--warning);
+            font-weight: bold;
+            display: none;
+        }
