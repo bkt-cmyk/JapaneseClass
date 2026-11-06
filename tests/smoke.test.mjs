@@ -26,8 +26,8 @@ test('all local navigation and assets resolve', () => {
     assert.doesNotMatch(html, /user-scalable=no/);
     assert.match(html, /id="load-message"/);
   }
-  assert.match(file('kanji_practice.html'), /url=pages\/kanji.html/);
-  assert.match(file('vocabulary_practice.html'), /url=pages\/vocabulary.html/);
+  assert.equal(existsSync(path.join(root, 'kanji_practice.html')), false);
+  assert.equal(existsSync(path.join(root, 'vocabulary_practice.html')), false);
 });
 
 test('lesson data is valid and unchanged', () => {

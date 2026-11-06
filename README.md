@@ -33,8 +33,6 @@ assets/js/                     Exercise logic
 data/                          Lesson datasets (JSON)
 tests/                         Smoke tests
 archive/                       Previous kanji page version
-kanji_practice.html            Redirect for the old URL
-vocabulary_practice.html       Redirect for the old URL
 README.th.md                   Thai documentation
 ```
 

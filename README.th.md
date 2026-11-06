@@ -33,8 +33,6 @@ assets/js/                     JavaScript ของแบบฝึก
 data/                          ข้อมูลบทเรียน JSON
 tests/                         ชุดทดสอบพื้นฐาน
 archive/                       หน้าเขียนคันจิเวอร์ชันเก่า
-kanji_practice.html            ลิงก์เก่า (เปลี่ยนเส้นทาง)
-vocabulary_practice.html       ลิงก์เก่า (เปลี่ยนเส้นทาง)
 README.md                      คู่มือภาษาอังกฤษ
 ```
 
