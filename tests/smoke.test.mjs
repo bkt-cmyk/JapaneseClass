@@ -223,6 +223,6 @@ test('Japanese IME Enter is ignored while composing and advances after a correct
   assert.equal(input.className, 'correct');
   assert.equal(input.readOnly, true);
   input.dispatch('keydown', { key: 'Enter', isComposing: false, keyCode: 13, preventDefault() {} });
-  assert.equal(meaning.innerText, 'เลี้ยง (สัตว์)');
+  assert.equal(meaning.innerText, 'มองหา, ค้นหา');
   assert.equal(input.readOnly, false);
 });
