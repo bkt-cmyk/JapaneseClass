@@ -12,6 +12,12 @@ const defaultData = {
     let currentWordIdx = 0;
     let isCorrect = false;
 
+    function setAnswerStatus(message, state = 'neutral') {
+        const element = document.getElementById('answer-status');
+        element.innerText = message;
+        element.className = 'status-chip state-' + state;
+    }
+
     function setLoadMessage(message) {
         const element = document.getElementById('load-message');
         element.textContent = message;
@@ -75,6 +81,7 @@ const defaultData = {
         
         document.getElementById('revealed-hint').style.display = "none";
         document.getElementById('check-btn').innerText = "ตรวจสอบคำตอบ (Enter)";
+        setAnswerStatus('พร้อมแล้วหรือยัง?', 'neutral');
     }
 
     function handleMainAction() {
@@ -95,11 +102,13 @@ const defaultData = {
         if (userAnswer === correctAnswer) {
             isCorrect = true;
             input.className = 'correct';
+            setAnswerStatus('ถูกต้อง! ไปคำถัดไปได้เลย', 'success');
             // Keep focus so Enter can advance even after a correct answer.
             input.readOnly = true;
             document.getElementById('check-btn').innerText = "คำถัดไป (Enter)";
         } else {
             input.className = 'wrong';
+            setAnswerStatus('ยังไม่ถูก ลองใหม่อีกครั้ง', 'error');
             setTimeout(() => {
                 if (!isCorrect) input.className = '';
             }, 400);
@@ -111,6 +120,7 @@ const defaultData = {
         const correctAnswer = kanjiDataSets[currentSetName][currentWordIdx].data1;
         hintDiv.innerText = `เฉลย: ${correctAnswer}`;
         hintDiv.style.display = "block";
+        setAnswerStatus('ดูเฉลยแล้ว ลองพิมพ์คำตอบได้เลย', 'info');
     }
 
     function nextInSet() {

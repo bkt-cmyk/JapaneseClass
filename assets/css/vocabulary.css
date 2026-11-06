@@ -1,241 +1,54 @@
-:root {
-            --primary: #17a398;
-            --success: #3eaa5c;
-            --error: #e64545;
-            --warning: #8b392a;
-            --bg: #fff6e4;
-            --card-bg: #ffffff;
-            --text-main: #2b2140;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: 'Kanit', 'Zen Maru Gothic', sans-serif;
-            background-color: var(--bg);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            color: var(--text-main);
-        }
-
-        header {
-            background: white;
-            padding: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-container {
-            max-width: 500px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .select-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .select-group label {
-            font-size: 0.85rem;
-            font-weight: 700;
-            min-width: 80px;
-            color: #636e72;
-        }
-
-        select {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #f0dfb8;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            background: #fff;
-            outline: none;
-            cursor: pointer;
-        }
-
-        main {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 450px;
-            padding: 40px 30px;
-            border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .reading-hint { font-size: 1.1rem; color: #b2bec3; margin-bottom: 10px; }
-
-        .meaning-badge {
-            display: inline-block;
-            background: #ffe8b8;
-            color: var(--primary);
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-        }
-
-        .input-section {
-            margin-bottom: 25px;
-            position: relative;
-        }
-
-        #answer-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.8rem;
-            text-align: center;
-            border: 3px solid #dfe6e9;
-            border-radius: 15px;
-            outline: none;
-            font-family: 'Zen Maru Gothic', sans-serif;
-            transition: all 0.2s;
-        }
-
-        #answer-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(23, 163, 152, 0.12);
-        }
-
-        #answer-input.correct {
-            border-color: var(--success);
-            background-color: rgba(0, 184, 148, 0.05);
-        }
-
-        #answer-input.wrong {
-            border-color: var(--error);
-            animation: shake 0.4s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        button {
-            padding: 16px;
-            border: none;
-            border-radius: 16px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .btn-check { background: var(--primary); color: white; grid-column: span 2; }
-        .btn-hint { background: #f1f2f6; color: #636e72; }
-        .btn-next { background: #dfe6e9; color: #2d3436; }
-
-        button:active { transform: translateY(2px); filter: brightness(0.9); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .hidden-hint {
-            margin-top: 15px;
-            font-size: 1.2rem;
-            color: var(--warning);
-            font-weight: bold;
-            display: none;
-        }
-
-.brand-row {
-  max-width: 500px;
-  margin: 0 auto 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.vocabulary-page .card .info-section { margin-bottom: 18px; }
+.vocabulary-page .card .reading-hint { margin-bottom: 0; }
+.vocabulary-page .input-section { margin-bottom: 20px; }
+.vocabulary-page #answer-input {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: 3px solid var(--line);
+  border-radius: 24px;
+  outline: none;
+  background: #fffdf7;
+  color: var(--ink);
+  text-align: center;
+  font-family: 'Zen Maru Gothic', 'Kanit', sans-serif;
+  font-size: 1.65rem;
+  transition: background .2s, border-color .2s;
 }
-.brand-row h1 { font-size: 1.15rem; margin: 0; font-weight: 700; }
-.home-link {
-  color: #0e7a6e;
-  background: #eaf6f4;
-  border-radius: 999px;
-  padding: 6px 12px;
+.vocabulary-page #answer-input:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px rgba(23, 163, 152, .12);
+}
+.vocabulary-page #answer-input.correct { border-color: var(--success); background: #f3fff4; }
+.vocabulary-page #answer-input.wrong { border-color: var(--error); animation: shake .4s ease; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-9px); }
+  75% { transform: translateX(9px); }
+}
+.vocabulary-page .card .status-chip { margin-bottom: 18px; }
+.vocabulary-page .actions { grid-template-columns: 1fr 1fr; }
+.vocabulary-page .btn-check {
+  grid-column: span 2;
+  background: var(--pop);
+  color: white;
+  box-shadow: 0 4px 0 var(--pop-deep);
+}
+.vocabulary-page .btn-next { background: var(--card); color: var(--brand-deep); border: 2px solid var(--line); box-shadow: 0 4px 0 var(--line); }
+.vocabulary-page .hidden-hint {
+  margin-top: 12px;
+  display: none;
   font-weight: 700;
-  font-size: 0.82rem;
-  text-decoration: none;
-  white-space: nowrap;
+  color: var(--brand-deep);
+  font-size: 1rem;
 }
-.home-link:hover { background: #d8efeb; }
-.home-link:focus-visible, button:focus-visible, select:focus-visible {
-  outline: 3px solid var(--primary);
-  outline-offset: 2px;
-}
-.load-message {
-  max-width: 500px;
-  margin: 0 auto 12px;
-  padding: 8px 12px;
-  color: #8b392a;
-  background: #fff0da;
-  border: 1px solid #e9bd8e;
-  border-radius: 12px;
-  font-size: 0.85rem;
-}
-.load-message[hidden] { display: none; }
-button, select { font-family: inherit; }
 @media (max-width: 390px) {
-  .card { padding: 28px 18px; }
-  .actions { gap: 8px; }
-  button { padding: 12px 8px; }
+  .vocabulary-page .card { padding: 22px 16px; }
+  .vocabulary-page .actions { gap: 8px; }
+  .vocabulary-page .actions button { padding: 11px 8px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-}
-
-/* Desktop: wider header and form while leaving the mobile layout untouched. */
 @media (min-width: 900px) {
-  header { padding: 20px 28px; }
-  header .brand-row,
-  header .nav-container,
-  header .load-message {
-    max-width: 860px;
-    width: 100%;
-  }
-  header .nav-container {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 24px;
-  }
-  header .select-group { min-width: 0; }
-  header .select-group select { min-width: 0; }
-  main { padding: 40px 24px; }
-  main .card {
-    max-width: 700px;
-    padding: 52px 60px;
-  }
-  main .card .input-section,
-  main .card .actions {
-    max-width: 520px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  main .card .meaning-badge { margin-bottom: 36px; }
+  .vocabulary-page .site-main .card { max-width: 700px; padding: 50px 60px; }
+  .vocabulary-page .card .input-section,
+  .vocabulary-page .card .actions { max-width: 520px; margin-left: auto; margin-right: auto; }
 }

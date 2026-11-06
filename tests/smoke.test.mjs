@@ -48,11 +48,28 @@ test('lesson data is valid and unchanged', () => {
   }
 });
 
+test('all pages use the kanji-based shared theme', () => {
+  const theme = file('assets/css/theme.css');
+  for (const token of ['--bg: #fff6e4', '--brand: #17a398', '--pop: #ff6b4a', '.site-header', '.brand-row', '.card', '.meaning-badge', '.actions button']) {
+    assert.ok(theme.includes(token), 'Shared theme lacks ' + token);
+  }
+  for (const page of ['index.html', 'pages/kanji.html', 'pages/vocabulary.html']) {
+    assert.match(file(page), /assets\/css\/theme\.css\?v=/);
+    assert.match(file(page), /class="site-header/);
+    assert.match(file(page), /class="site-main/);
+  }
+  for (const css of ['assets/css/home.css', 'assets/css/kanji.css', 'assets/css/vocabulary.css']) {
+    assert.doesNotMatch(file(css), /:root\s*\{/);
+  }
+  assert.match(file('pages/vocabulary.html'), /id="answer-status"/);
+});
+
 test('desktop layout rules and cache-versioned assets are present', () => {
   for (const name of ['assets/css/home.css', 'assets/css/kanji.css', 'assets/css/vocabulary.css']) {
     assert.match(file(name), /@media \(min-width: 900px\)/);
   }
   assert.match(file('assets/css/kanji.css'), /grid-template-areas:/);
+  assert.match(file('assets/css/theme.css'), /@media \(min-width: 900px\)/);
   assert.match(file('index.html'), /assets\/css\/home\.css\?v=/);
   assert.match(file('pages/kanji.html'), /assets\/js\/kanji\.js\?v=/);
   assert.match(file('pages/vocabulary.html'), /assets\/js\/vocabulary\.js\?v=/);
@@ -195,10 +212,12 @@ test('vocabulary checks readings and permits retrying a wrong answer', async () 
   get('answer-input').value = 'ちがう';
   vm.runInContext('checkAnswer()', app.context);
   assert.equal(get('answer-input').className, 'wrong');
+  assert.match(get('answer-status').innerText, /ลองใหม่/);
   get('answer-input').value = 'みます';
   vm.runInContext('checkAnswer()', app.context);
   assert.equal(get('answer-input').className, 'correct');
   assert.equal(get('answer-input').readOnly, true);
+  assert.match(get('answer-status').innerText, /ถูกต้อง/);
   assert.equal(get('answer-input').disabled, false);
 });
 

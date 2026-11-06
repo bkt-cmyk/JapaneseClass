@@ -1,40 +1,43 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JapaneseClass — เรียนภาษาญี่ปุ่น</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/home.css?v=20261106-desktop">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff6e4">
+  <title>JapaneseClass — เรียนภาษาญี่ปุ่น</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/theme.css?v=20261106-theme">
+  <link rel="stylesheet" href="assets/css/home.css?v=20261106-theme">
 </head>
-<body>
-
-    <div class="container">
-        <header class="header">
-            <h1>เรียนภาษาญี่ปุ่น</h1>
-            <p>เลือกโหมดการฝึกฝนที่คุณต้องการ</p>
-        </header>
-
-        <div class="menu-grid">
-            <a href="pages/kanji.html" class="menu-card">
-                <div class="icon">✍️</div>
-                <span class="badge badge-writing">Handwriting</span>
-                <h2>ฝึกเขียนคันจิ</h2>
-                <p>ฝึกเขียนคันจิตามลำดับขีด พร้อมคำอ่าน ความหมาย และตัวช่วยดูลำดับขีด</p>
-            </a>
-
-            <a href="pages/vocabulary.html" class="menu-card">
-                <div class="icon">⌨️</div>
-                <span class="badge badge-typing">Typing</span>
-                <h2>ฝึกพิมพ์คำศัพท์</h2>
-                <p>ฝึกจำคำศัพท์และความหมายผ่านการพิมพ์ พร้อมระบบเช็คคำตอบ</p>
-            </a>
-        </div>
-
-        <footer class="footer">
-            JapaneseClass · ฝึกภาษาญี่ปุ่นด้วยตัวเอง
-        </footer>
+<body class="home-page">
+  <header class="site-header home-header">
+    <div class="brand-row">
+      <span class="kanji-mark">書</span>
+      <span class="brand-text">JapaneseClass</span>
     </div>
-
+  </header>
+  <main class="site-main home-main">
+    <div class="home-shell">
+      <section class="home-intro" aria-labelledby="page-title">
+        <h1 id="page-title">เรียนภาษาญี่ปุ่น</h1>
+        <p>เลือกโหมดที่ต้องการฝึก</p>
+      </section>
+      <nav class="menu-grid" aria-label="เลือกแบบฝึก">
+        <a href="pages/kanji.html" class="mode-card">
+          <span class="mode-symbol" aria-hidden="true">書</span>
+          <h2>ฝึกเขียนคันจิ</h2>
+          <p>ฝึกลำดับขีดคันจิ พร้อมคำอ่าน คำแปล และตัวอย่างการเขียน</p>
+          <span class="mode-action">เริ่มฝึก →</span>
+        </a>
+        <a href="pages/vocabulary.html" class="mode-card">
+          <span class="mode-symbol" aria-hidden="true">語</span>
+          <h2>ฝึกพิมพ์คำศัพท์</h2>
+          <p>ดูความหมายภาษาไทยแล้วพิมพ์คำอ่านภาษาญี่ปุ่น พร้อมตรวจคำตอบ</p>
+          <span class="mode-action">เริ่มฝึก →</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+  <footer class="site-footer">JapaneseClass · ฝึกภาษาญี่ปุ่นด้วยตัวเอง</footer>
 </body>
 </html>

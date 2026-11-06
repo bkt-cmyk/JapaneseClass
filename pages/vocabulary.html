@@ -1,59 +1,52 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ฝึกพิมพ์คำศัพท์ — JapaneseClass</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/vocabulary.css?v=20261106-desktop">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff6e4">
+  <title>ฝึกพิมพ์คำศัพท์ — JapaneseClass</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/theme.css?v=20261106-theme">
+  <link rel="stylesheet" href="../assets/css/vocabulary.css?v=20261106-theme">
 </head>
-<body>
-
-<header>
+<body class="vocabulary-page">
+  <header class="site-header">
     <div class="brand-row">
-        <a class="home-link" href="../index.html" aria-label="กลับหน้าแรก">← หน้าแรก</a>
-        <h1>ฝึกพิมพ์คำศัพท์</h1>
+      <a class="home-link" href="../index.html" aria-label="กลับหน้าแรก">← หน้าแรก</a>
+      <span class="kanji-mark">語</span>
+      <span class="brand-text">ฝึกพิมพ์คำศัพท์</span>
     </div>
     <p id="load-message" class="load-message" role="status" aria-live="polite" hidden></p>
     <div class="nav-container">
-        <div class="select-group">
-            <label for="setSelect">ชุดคำศัพท์:</label>
-            <select id="setSelect" onchange="loadSet(this.value)"></select>
-        </div>
-        <div class="select-group">
-            <label for="kanjiSelect">เลือกคำ:</label>
-            <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
-        </div>
+      <div class="select-group">
+        <label for="setSelect">ชุดคำศัพท์</label>
+        <select id="setSelect" onchange="loadSet(this.value)"></select>
+      </div>
+      <div class="select-group">
+        <label for="kanjiSelect">เลือกคำ</label>
+        <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
+      </div>
     </div>
-</header>
-
-<main>
-    <div class="card" id="practice-card">
-        <div class="info-section">
-            <div class="reading-hint">พิมพ์คำอ่านภาษาญี่ปุ่นจากความหมายต่อไปนี้</div>
-            <span class="meaning-badge" id="display-meaning">...</span>
-        </div>
-
-        <div class="input-section">
-            <input type="text" id="answer-input" lang="ja" aria-label="พิมพ์คำอ่านภาษาญี่ปุ่น" autocomplete="off" placeholder="答えは？" autofocus>
-            <div id="revealed-hint" class="hidden-hint" role="status" aria-live="polite"></div>
-        </div>
-
-        <div class="actions">
-            <button class="btn-check" id="check-btn" onclick="handleMainAction()">
-                ตรวจสอบคำตอบ (Enter)
-            </button>
-            <button class="btn-hint" onclick="showHint()">
-                <span>💡</span> เฉลย
-            </button>
-            <button class="btn-next" onclick="nextInSet()">
-                ข้ามคำนี้ <span>➔</span>
-            </button>
-        </div>
-    </div>
-</main>
-
-<script src="../assets/js/vocabulary.js?v=20261106-desktop"></script>
-
+  </header>
+  <main class="site-main">
+    <section class="card" id="practice-card" aria-label="แบบฝึกพิมพ์คำศัพท์">
+      <div class="info-section">
+        <span class="meaning-badge" id="display-meaning">...</span>
+        <span class="reading-hint">พิมพ์คำอ่านภาษาญี่ปุ่นของคำนี้</span>
+      </div>
+      <div class="input-section">
+        <input type="text" id="answer-input" lang="ja" aria-label="พิมพ์คำอ่านภาษาญี่ปุ่น" autocomplete="off" placeholder="答えは？" autofocus>
+        <div id="revealed-hint" class="hidden-hint" role="status" aria-live="polite"></div>
+      </div>
+      <div class="status-chip state-neutral" id="answer-status" role="status" aria-live="polite">พร้อมแล้วหรือยัง?</div>
+      <div class="actions">
+        <button class="btn-check" id="check-btn" onclick="handleMainAction()">ตรวจสอบคำตอบ (Enter)</button>
+        <button class="btn-hint" onclick="showHint()">筆 เฉลย</button>
+        <button class="btn-next" onclick="nextInSet()">ข้ามคำนี้ →</button>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">JapaneseClass · ฝึกภาษาญี่ปุ่นด้วยตัวเอง</footer>
+  <script src="../assets/js/vocabulary.js?v=20261106-theme"></script>
 </body>
 </html>

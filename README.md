@@ -28,7 +28,7 @@ Then open http://localhost:8000. Opening the HTML files with `file://` may preve
 ```text
 index.html                     Home page (GitHub Pages entry point)
 pages/                         Kanji and vocabulary exercises
-assets/css/                    Page styles
+assets/css/                    Shared theme and page styles
 assets/js/                     Exercise logic
 data/                          Lesson datasets (JSON)
 tests/                         Smoke tests
@@ -36,7 +36,7 @@ archive/                       Previous kanji page version
 README.th.md                   Thai documentation
 ```
 
-The layout adapts to mobile and desktop screens. Japanese IME composition is ignored until the reading has been committed. The site uses plain HTML, CSS, and JavaScript. Kanji stroke data and the Hanzi Writer library are loaded from jsDelivr, so writing practice requires an internet connection.
+All three pages share the same kanji-inspired design system in `assets/css/theme.css` (cream background, teal accents, coral buttons, cards and typography). The layout adapts to mobile and desktop screens. Japanese IME composition is ignored until the reading has been committed. The site uses plain HTML, CSS, and JavaScript. Kanji stroke data and the Hanzi Writer library are loaded from jsDelivr, so writing practice requires an internet connection.
 
 ## Check the project
 
