@@ -42,7 +42,7 @@ test('SEO metadata, crawlable pages, sitemap and social image are consistent', (
   const descriptions = new Set();
   for (const [name, canonical] of canonicalPages) {
     const html = file(name);
-    const title = html.match(/<title>([^<]+)<\\/title>/)?.[1];
+    const title = html.match(/<title>([^<]+)<\/title>/)?.[1];
     const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1];
     assert.ok(title && description, name + ' must have a title and meta description');
     assert.ok(!titles.has(title), 'Duplicate SEO title in ' + name);
@@ -52,14 +52,14 @@ test('SEO metadata, crawlable pages, sitemap and social image are consistent', (
     assert.ok(html.includes('<link rel="canonical" href="' + canonical + '">'));
     assert.ok(html.includes('<meta property="og:url" content="' + canonical + '">'));
     assert.ok(html.includes('<meta property="og:image" content="' + base + '/assets/og-cover.png">'));
-    assert.match(html, /<h1\\b/);
+    assert.match(html, /<h1\b/);
   }
   const sitemap = file('sitemap.xml');
-  const urls = [...sitemap.matchAll(/<loc>([^<]+)<\\/loc>/g)].map(m => m[1]);
+  const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]);
   assert.deepEqual(urls, canonicalPages.map(([, url]) => url));
   const robots = file('robots.txt');
   assert.ok(robots.includes('Sitemap: ' + base + '/sitemap.xml'));
-  assert.ok(!/Disallow:\\s*\\//.test(robots));
+  assert.ok(!/Disallow:\s*\//.test(robots));
   const favicon = readFileSync(path.join(root, 'assets/favicon.png'));
   const cover = readFileSync(path.join(root, 'assets/og-cover.png'));
   const signature = '89504e470d0a1a0a';
