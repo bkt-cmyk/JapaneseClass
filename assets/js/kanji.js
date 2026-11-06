@@ -23,6 +23,13 @@ const defaultData = {
         let currentCharInWordIdx = 0;
         let isWordComplete = false;
         let autoAdvanceTimer;
+        const completedBySet = new Map();
+
+        function setLoadMessage(message) {
+            const element = document.getElementById('load-message');
+            element.textContent = message;
+            element.hidden = !message;
+        }
 
         /**
          * ตัวโหลดข้อมูลตัวอักษรที่ได้รับการปรับปรุง:
@@ -46,6 +53,9 @@ const defaultData = {
                         .then(onComplete)
                         .catch(err => {
                             console.error('ไม่พบข้อมูลสำหรับตัวอักษร:', char);
+                            if (currentSetName && kanjiDataSets[currentSetName]?.[currentWordIdx]?.char.includes(char)) {
+                                setStatus('โหลดข้อมูลลำดับขีดไม่สำเร็จ กรุณาตรวจอินเทอร์เน็ตและรีเฟรชหน้าเว็บ', 'error');
+                            }
                             if (onErr) onErr(err);
                         });
                 });
@@ -54,10 +64,13 @@ const defaultData = {
         async function fetchKanjiData() {
             try {
                 const response = await fetch('../data/kanji.json').catch(() => null);
-                kanjiDataSets = (response && response.ok) ? await response.json() : defaultData;
+                if (!response || !response.ok) throw new Error('Lesson file unavailable');
+                kanjiDataSets = await response.json();
+                setLoadMessage('');
                 initApp();
             } catch (e) {
                 kanjiDataSets = defaultData;
+                setLoadMessage('โหลดบทเรียนเต็มไม่ได้ กำลังใช้ชุดตัวอย่าง โปรดตรวจอินเทอร์เน็ตแล้วรีเฟรชหน้าเว็บ');
                 initApp();
             }
         }
@@ -76,6 +89,7 @@ const defaultData = {
 
         function loadSet(setName) {
             currentSetName = setName;
+            if (!completedBySet.has(setName)) completedBySet.set(setName, new Set());
             const kanjiSelect = document.getElementById('kanjiSelect');
             kanjiSelect.innerHTML = kanjiDataSets[setName].map((item, i) =>
                 `<option value="${i}">${item.char} - ${item.mean}</option>`
@@ -102,9 +116,13 @@ const defaultData = {
         function updateProgress() {
             const set = kanjiDataSets[currentSetName];
             const total = set.length;
-            const pct = total > 0 ? ((currentWordIdx + 1) / total) * 100 : 0;
+            const completed = completedBySet.get(currentSetName)?.size ?? 0;
+            const pct = total > 0 ? (completed / total) * 100 : 0;
             document.getElementById('progress-fill').style.width = pct + '%';
-            document.getElementById('progress-count').innerText = `${currentWordIdx + 1}/${total}`;
+            document.getElementById('progress-count').innerText = `${completed}/${total}`;
+            const track = document.getElementById('progress-track');
+            track.setAttribute('aria-valuemax', String(total));
+            track.setAttribute('aria-valuenow', String(completed));
         }
 
         function setStatus(text, state) {
@@ -124,6 +142,12 @@ const defaultData = {
                 try { writer.cancelQuiz(); } catch (e) { /* no active quiz to cancel */ }
             }
             container.innerHTML = '';
+            writer = null;
+
+            if (typeof HanziWriter === 'undefined') {
+                setStatus('โหลดระบบเขียนไม่สำเร็จ กรุณาเชื่อมต่ออินเทอร์เน็ตแล้วรีเฟรชหน้าเว็บ', 'error');
+                return;
+            }
 
             const isKanji = /[\u4e00-\u9faf]/.test(charToDraw);
             if (!isKanji) {
@@ -138,7 +162,8 @@ const defaultData = {
 
             const size = Math.min(container.clientWidth - 10, 320);
 
-            writer = HanziWriter.create('writer-container', charToDraw, {
+            try {
+                writer = HanziWriter.create('writer-container', charToDraw, {
                 width: size,
                 height: size,
                 showCharacter: false,
@@ -150,9 +175,13 @@ const defaultData = {
                 strokeAnimationSpeed: 1,
                 delayBetweenStrokes: 100,
                 charDataLoader: charDataLoader
-            });
-
-            startQuiz();
+                });
+                startQuiz();
+            } catch (err) {
+                writer = null;
+                console.error('Kanji writer could not start:', err);
+                setStatus('เปิดแบบฝึกเขียนไม่สำเร็จ กรุณารีเฟรชหน้าเว็บ', 'error');
+            }
         }
 
         function startQuiz() {
@@ -192,7 +221,10 @@ const defaultData = {
         }
 
         function handleWordComplete() {
+            if (isWordComplete) return;
             isWordComplete = true;
+            completedBySet.get(currentSetName)?.add(currentWordIdx);
+            updateProgress();
             setStatus("เขียนครบทั้งคำแล้ว ✓", 'success');
             document.getElementById('next-btn').innerHTML = 'คำถัดไป <span>→</span>';
 

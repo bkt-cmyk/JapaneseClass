@@ -1,8 +1,8 @@
 :root {
-            --primary: #6c5ce7;
-            --secondary: #00cec9;
-            --bg: #f4f7f6;
-            --text-main: #2d3436;
+            --primary: #17a398;
+            --secondary: #ff6b4a;
+            --bg: #fff6e4;
+            --text-main: #2b2140;
             --white: #ffffff;
         }
 
@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Chakra Petch', 'Noto Sans JP', sans-serif;
+            font-family: 'Kanit', 'Zen Maru Gothic', sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             display: flex;
@@ -96,8 +96,8 @@
             text-transform: uppercase;
         }
 
-        .badge-writing { background: #e1f0ff; color: #4a90e2; }
-        .badge-typing { background: #f0edff; color: var(--primary); }
+        .badge-writing { background: #e1f0ff; color: #0e7a6e; }
+        .badge-typing { background: #ffe8b8; color: #a7442c; }
 
         .footer {
             margin-top: auto;
@@ -110,3 +110,11 @@
             .header h1 { font-size: 2rem; }
             .menu-grid { grid-template-columns: 1fr; }
         }
+
+.menu-card:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-card { transition: none; }
+}

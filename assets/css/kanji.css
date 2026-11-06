@@ -341,3 +341,41 @@
                 animation: none !important;
             }
         }
+
+.home-link {
+  color: var(--brand-deep);
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.home-link:hover { background: #eaf6f4; }
+.home-link:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.progress-label {
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.progress-row { flex-wrap: wrap; }
+.load-message {
+  max-width: 460px;
+  margin: 0 auto 12px;
+  padding: 8px 12px;
+  color: #8b392a;
+  background: #fff0da;
+  border: 1px solid #e9bd8e;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+.load-message[hidden] { display: none; }
+@media (max-width: 390px) {
+  .brand-row { flex-wrap: wrap; }
+  .brand-row .brand-text { font-size: 0.95rem; }
+  .progress-label { width: 100%; }
+}

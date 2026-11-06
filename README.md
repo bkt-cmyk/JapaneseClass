@@ -8,7 +8,7 @@ A small, browser-based Japanese practice site with Thai translations. It has two
 
 ## Practice modes
 
-- **Kanji:** Draw characters in the correct stroke order. See the reading, Thai meaning, stroke animation, and progress within a lesson.
+- **Kanji:** Draw characters in the correct stroke order. See the reading, Thai meaning, stroke animation, and a count of words completed in the current page session.
 - **Vocabulary:** Given a Thai meaning, type the matching Japanese reading. Check your answer, reveal it, or skip ahead.
 
 The kanji dataset contains 365 entries across 73 N5/N4 lesson sets. The vocabulary dataset currently covers lessons 26–28 (144 words).
@@ -46,4 +46,4 @@ The site uses plain HTML, CSS, and JavaScript. Kanji stroke data and the Hanzi W
 node --test tests/smoke.test.mjs
 ```
 
-The tests check internal file links, lesson data, script syntax, and basic practice-page behavior. They are not a substitute for testing in a real browser.
+The tests check internal file links, lesson data, script syntax, progress counting, offline fallback, and basic practice-page behavior. They are not a substitute for testing in a real browser.

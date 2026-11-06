@@ -12,13 +12,22 @@ const defaultData = {
     let currentWordIdx = 0;
     let isCorrect = false;
 
+    function setLoadMessage(message) {
+        const element = document.getElementById('load-message');
+        element.textContent = message;
+        element.hidden = !message;
+    }
+
     async function fetchKanjiData() {
         try {
             const response = await fetch('../data/vocabulary.json');
-            kanjiDataSets = response.ok ? await response.json() : defaultData;
+            if (!response.ok) throw new Error('Lesson file unavailable');
+            kanjiDataSets = await response.json();
+            setLoadMessage('');
             initApp();
         } catch (e) {
             kanjiDataSets = defaultData;
+            setLoadMessage('โหลดบทเรียนเต็มไม่ได้ กำลังใช้ชุดตัวอย่าง โปรดตรวจอินเทอร์เน็ตแล้วรีเฟรชหน้าเว็บ');
             initApp();
         }
     }

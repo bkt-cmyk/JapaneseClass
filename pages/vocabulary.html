@@ -2,21 +2,26 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hiragana Typing</title>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ฝึกพิมพ์คำศัพท์ — JapaneseClass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/vocabulary.css">
 </head>
 <body>
 
 <header>
+    <div class="brand-row">
+        <a class="home-link" href="../index.html" aria-label="กลับหน้าแรก">← หน้าแรก</a>
+        <h1>ฝึกพิมพ์คำศัพท์</h1>
+    </div>
+    <p id="load-message" class="load-message" role="status" aria-live="polite" hidden></p>
     <div class="nav-container">
         <div class="select-group">
-            <label>ชุดคำศัพท์:</label>
+            <label for="setSelect">ชุดคำศัพท์:</label>
             <select id="setSelect" onchange="loadSet(this.value)"></select>
         </div>
         <div class="select-group">
-            <label>เลือกคำ:</label>
+            <label for="kanjiSelect">เลือกคำ:</label>
             <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
         </div>
     </div>
@@ -25,13 +30,13 @@
 <main>
     <div class="card" id="practice-card">
         <div class="info-section">
-            <div class="reading-hint">คำศัพท์นี้คืออะไร?</div>
+            <div class="reading-hint">พิมพ์คำอ่านภาษาญี่ปุ่นจากความหมายต่อไปนี้</div>
             <span class="meaning-badge" id="display-meaning">...</span>
         </div>
 
         <div class="input-section">
-            <input type="text" id="answer-input" autocomplete="off" placeholder="答えは？" autofocus>
-            <div id="revealed-hint" class="hidden-hint"></div>
+            <input type="text" id="answer-input" lang="ja" aria-label="พิมพ์คำอ่านภาษาญี่ปุ่น" autocomplete="off" placeholder="答えは？" autofocus>
+            <div id="revealed-hint" class="hidden-hint" role="status" aria-live="polite"></div>
         </div>
 
         <div class="actions">
