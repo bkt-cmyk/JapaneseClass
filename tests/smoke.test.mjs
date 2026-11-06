@@ -30,6 +30,48 @@ test('all local navigation and assets resolve', () => {
   assert.equal(existsSync(path.join(root, 'vocabulary_practice.html')), false);
 });
 
+
+test('SEO metadata, crawlable pages, sitemap and social image are consistent', () => {
+  const base = 'https://japaneseclass.vercel.app';
+  const canonicalPages = [
+    ['index.html', base + '/'],
+    ['pages/kanji.html', base + '/pages/kanji.html'],
+    ['pages/vocabulary.html', base + '/pages/vocabulary.html']
+  ];
+  const titles = new Set();
+  const descriptions = new Set();
+  for (const [name, canonical] of canonicalPages) {
+    const html = file(name);
+    const title = html.match(/<title>([^<]+)<\\/title>/)?.[1];
+    const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1];
+    assert.ok(title && description, name + ' must have a title and meta description');
+    assert.ok(!titles.has(title), 'Duplicate SEO title in ' + name);
+    assert.ok(!descriptions.has(description), 'Duplicate SEO description in ' + name);
+    titles.add(title);
+    descriptions.add(description);
+    assert.ok(html.includes('<link rel="canonical" href="' + canonical + '">'));
+    assert.ok(html.includes('<meta property="og:url" content="' + canonical + '">'));
+    assert.ok(html.includes('<meta property="og:image" content="' + base + '/assets/og-cover.png">'));
+    assert.match(html, /<h1\\b/);
+  }
+  const sitemap = file('sitemap.xml');
+  const urls = [...sitemap.matchAll(/<loc>([^<]+)<\\/loc>/g)].map(m => m[1]);
+  assert.deepEqual(urls, canonicalPages.map(([, url]) => url));
+  const robots = file('robots.txt');
+  assert.ok(robots.includes('Sitemap: ' + base + '/sitemap.xml'));
+  assert.ok(!/Disallow:\\s*\\//.test(robots));
+  const favicon = readFileSync(path.join(root, 'assets/favicon.png'));
+  const cover = readFileSync(path.join(root, 'assets/og-cover.png'));
+  const signature = '89504e470d0a1a0a';
+  assert.equal(favicon.subarray(0, 8).toString('hex'), signature);
+  assert.equal(cover.subarray(0, 8).toString('hex'), signature);
+  assert.ok(cover.readUInt32BE(16) >= 600 && cover.readUInt32BE(20) >= 315);
+  const command = load('vercel.json').ignoreCommand;
+  for (const name of ['index.html', 'pages/', 'assets/', 'data/', 'vercel.json', 'sitemap.xml', 'robots.txt']) {
+    assert.ok(command.includes(name), 'Deploy ignore command misses ' + name);
+  }
+});
+
 test('lesson data is valid and unchanged', () => {
   const kanji = load('data/kanji.json');
   const vocabulary = load('data/vocabulary.json');
