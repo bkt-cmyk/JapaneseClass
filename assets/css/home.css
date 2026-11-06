@@ -118,3 +118,21 @@
 @media (prefers-reduced-motion: reduce) {
   .menu-card { transition: none; }
 }
+
+/* Use the available space on laptop and desktop screens. */
+@media (min-width: 900px) {
+  body { padding: 64px 32px 28px; }
+  .container { max-width: 1040px; }
+  .header { margin-bottom: 56px; }
+  .header h1 { font-size: 3rem; }
+  .menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+  }
+  .menu-card {
+    min-height: 320px;
+    padding: 44px 36px;
+    justify-content: center;
+  }
+  .footer { padding-top: 54px; }
+}

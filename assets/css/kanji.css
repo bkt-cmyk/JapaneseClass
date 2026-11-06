@@ -379,3 +379,56 @@
   .brand-row .brand-text { font-size: 0.95rem; }
   .progress-label { width: 100%; }
 }
+
+/* Desktop: controls beside the writing canvas, not a narrow phone-sized card. */
+@media (min-width: 900px) {
+  header { padding: 18px 32px 20px; }
+  header .brand-row,
+  header .progress-row,
+  header .nav-container,
+  header .load-message {
+    max-width: 900px;
+    width: 100%;
+  }
+  header .nav-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+  header .select-group { min-width: 0; }
+  header .select-group select { min-width: 0; }
+  main { padding: 36px 24px; }
+  main .card {
+    max-width: 900px;
+    padding: 38px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr);
+    grid-template-areas:
+      "info writer"
+      "status writer"
+      "actions writer";
+    column-gap: 40px;
+    row-gap: 18px;
+    align-items: center;
+  }
+  main .card .info-section {
+    grid-area: info;
+    margin: 0;
+    align-self: end;
+  }
+  main .card #writer-container {
+    grid-area: writer;
+    width: 320px;
+    height: 320px;
+    margin: 0 auto;
+  }
+  main .card .status-chip {
+    grid-area: status;
+    justify-self: center;
+    margin: 0;
+  }
+  main .card .actions {
+    grid-area: actions;
+    align-self: start;
+  }
+}

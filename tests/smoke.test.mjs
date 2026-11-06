@@ -48,6 +48,16 @@ test('lesson data is valid and unchanged', () => {
   }
 });
 
+test('desktop layout rules and cache-versioned assets are present', () => {
+  for (const name of ['assets/css/home.css', 'assets/css/kanji.css', 'assets/css/vocabulary.css']) {
+    assert.match(file(name), /@media \(min-width: 900px\)/);
+  }
+  assert.match(file('assets/css/kanji.css'), /grid-template-areas:/);
+  assert.match(file('index.html'), /assets\/css\/home\.css\?v=/);
+  assert.match(file('pages/kanji.html'), /assets\/js\/kanji\.js\?v=/);
+  assert.match(file('pages/vocabulary.html'), /assets\/js\/vocabulary\.js\?v=/);
+});
+
 test('practice scripts have valid JavaScript syntax', () => {
   for (const name of ['assets/js/kanji.js', 'assets/js/vocabulary.js']) {
     assert.doesNotThrow(() => new vm.Script(file(name), { filename: name }));
@@ -60,13 +70,16 @@ function mockDocument() {
     getElementById(id) {
       if (!fields.has(id)) {
         const attrs = new Map();
+        const handlers = new Map();
         fields.set(id, {
           value: '', innerHTML: '', innerText: '', textContent: '', className: '',
-          disabled: false, hidden: true, style: {}, clientWidth: 320, offsetWidth: 320,
+          disabled: false, readOnly: false, hidden: true, style: {}, clientWidth: 320, offsetWidth: 320,
           classList: { add() {}, remove() {} },
           setAttribute(name, value) { attrs.set(name, String(value)); },
           getAttribute(name) { return attrs.get(name); },
-          focus() {}, addEventListener() {}
+          focus() {},
+          addEventListener(type, handler) { handlers.set(type, handler); },
+          dispatch(type, event = {}) { handlers.get(type)?.(event); }
         });
       }
       return fields.get(id);
@@ -78,7 +91,9 @@ function createKanjiApp({ failData = false, missingWriter = false } = {}) {
   const document = mockDocument();
   let lastChar = null;
   let quizCallbacks = null;
-  const window = { addEventListener() {} };
+  let quizStarts = 0;
+  const windowHandlers = new Map();
+  const window = { addEventListener(type, cb) { windowHandlers.set(type, cb); } };
   const sandbox = {
     document, window, console,
     fetch: async () => {
@@ -91,14 +106,18 @@ function createKanjiApp({ failData = false, missingWriter = false } = {}) {
     create(_id, char) {
       lastChar = char;
       return {
-        quiz(callbacks) { quizCallbacks = callbacks; },
+        quiz(callbacks) { quizCallbacks = callbacks; quizStarts++; },
         cancelQuiz() {}, animateCharacter() {}, showCharacter() {}, updateColor() {}
       };
     }
   };
   const context = vm.createContext(sandbox);
   vm.runInContext(file('assets/js/kanji.js'), context);
-  return { document, window, context, lastChar: () => lastChar, quiz: () => quizCallbacks };
+  return {
+    document, window, context, lastChar: () => lastChar,
+    quiz: () => quizCallbacks, quizStarts: () => quizStarts,
+    emitResize: () => windowHandlers.get('resize')?.()
+  };
 }
 
 test('kanji drawing starts, and only completed words count as progress', async () => {
@@ -122,6 +141,21 @@ test('kanji drawing starts, and only completed words count as progress', async (
   assert.equal(get('progress-count').innerText, '0/5');
   vm.runInContext('loadSet("N5 L1")', app.context);
   assert.equal(get('progress-count').innerText, '1/5', 'switching sets retains session progress');
+});
+
+test('desktop resize with unchanged canvas size does not restart the quiz', async () => {
+  const app = createKanjiApp();
+  await app.window.onload();
+  assert.equal(app.quizStarts(), 1);
+  // This mock executes the debounce callback immediately for the event.
+  const resize = vm.runInContext(
+    `(() => { clearTimeout(resizeTimer); if (writer && !isWordComplete) {
+      const size = Math.min(document.getElementById('writer-container').clientWidth - 10, 320);
+      if (size > 32 && Math.abs(size - lastWriterSize) >= 8) setupWriterForChar();
+    } })`, app.context
+  );
+  resize();
+  assert.equal(app.quizStarts(), 1);
 });
 
 test('kanji warns instead of crashing when external writer is unavailable', async () => {
@@ -164,7 +198,8 @@ test('vocabulary checks readings and permits retrying a wrong answer', async () 
   get('answer-input').value = 'みます';
   vm.runInContext('checkAnswer()', app.context);
   assert.equal(get('answer-input').className, 'correct');
-  assert.equal(get('answer-input').disabled, true);
+  assert.equal(get('answer-input').readOnly, true);
+  assert.equal(get('answer-input').disabled, false);
 });
 
 test('vocabulary fallback is clearly disclosed', async () => {
@@ -172,4 +207,22 @@ test('vocabulary fallback is clearly disclosed', async () => {
   await app.window.onload();
   assert.equal(app.document.getElementById('load-message').hidden, false);
   assert.match(app.document.getElementById('load-message').textContent, /ชุดตัวอย่าง/);
+});
+
+test('Japanese IME Enter is ignored while composing and advances after a correct answer', async () => {
+  const app = createVocabularyApp();
+  await app.window.onload();
+  const input = app.document.getElementById('answer-input');
+  const meaning = app.document.getElementById('display-meaning');
+  input.value = 'みます';
+  input.dispatch('compositionstart');
+  input.dispatch('keydown', { key: 'Enter', isComposing: true, keyCode: 229, preventDefault() {} });
+  assert.equal(input.className, '', 'IME composition should not check the answer');
+  input.dispatch('compositionend');
+  input.dispatch('keydown', { key: 'Enter', isComposing: false, keyCode: 13, preventDefault() {} });
+  assert.equal(input.className, 'correct');
+  assert.equal(input.readOnly, true);
+  input.dispatch('keydown', { key: 'Enter', isComposing: false, keyCode: 13, preventDefault() {} });
+  assert.equal(meaning.innerText, 'เลี้ยง (สัตว์)');
+  assert.equal(input.readOnly, false);
 });

@@ -23,6 +23,7 @@ const defaultData = {
         let currentCharInWordIdx = 0;
         let isWordComplete = false;
         let autoAdvanceTimer;
+        let lastWriterSize = 0;
         const completedBySet = new Map();
 
         function setLoadMessage(message) {
@@ -161,6 +162,7 @@ const defaultData = {
             }
 
             const size = Math.min(container.clientWidth - 10, 320);
+            lastWriterSize = size;
 
             try {
                 writer = HanziWriter.create('writer-container', charToDraw, {
@@ -261,6 +263,11 @@ const defaultData = {
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                if (writer) setupWriterForChar();
+                if (!writer || isWordComplete) return;
+                const container = document.getElementById('writer-container');
+                const size = Math.min(container.clientWidth - 10, 320);
+                if (size > 32 && Math.abs(size - lastWriterSize) >= 8) {
+                    setupWriterForChar();
+                }
             }, 300);
         });

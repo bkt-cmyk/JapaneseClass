@@ -38,10 +38,14 @@ const defaultData = {
         setSelect.innerHTML = setNames.map(name => `<option value="${name}">${name}</option>`).join('');
         if (setNames.length > 0) loadSet(setNames[0]);
 
-        document.getElementById('answer-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleMainAction();
-            }
+        const input = document.getElementById('answer-input');
+        let isComposing = false;
+        input.addEventListener('compositionstart', () => { isComposing = true; });
+        input.addEventListener('compositionend', () => { isComposing = false; });
+        input.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' || e.isComposing || isComposing || e.keyCode === 229) return;
+            e.preventDefault();
+            handleMainAction();
         });
     }
 
@@ -66,6 +70,7 @@ const defaultData = {
         input.value = '';
         input.className = '';
         input.disabled = false;
+        input.readOnly = false;
         input.focus();
         
         document.getElementById('revealed-hint').style.display = "none";
@@ -90,7 +95,8 @@ const defaultData = {
         if (userAnswer === correctAnswer) {
             isCorrect = true;
             input.className = 'correct';
-            input.disabled = true;
+            // Keep focus so Enter can advance even after a correct answer.
+            input.readOnly = true;
             document.getElementById('check-btn').innerText = "คำถัดไป (Enter)";
         } else {
             input.className = 'wrong';

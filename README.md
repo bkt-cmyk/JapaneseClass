@@ -38,7 +38,7 @@ vocabulary_practice.html       Redirect for the old URL
 README.th.md                   Thai documentation
 ```
 
-The site uses plain HTML, CSS, and JavaScript. Kanji stroke data and the Hanzi Writer library are loaded from jsDelivr, so writing practice requires an internet connection.
+The layout adapts to mobile and desktop screens. Japanese IME composition is ignored until the reading has been committed. The site uses plain HTML, CSS, and JavaScript. Kanji stroke data and the Hanzi Writer library are loaded from jsDelivr, so writing practice requires an internet connection.
 
 ## Check the project
 

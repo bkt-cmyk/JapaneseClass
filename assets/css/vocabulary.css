@@ -209,3 +209,33 @@ button, select { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Desktop: wider header and form while leaving the mobile layout untouched. */
+@media (min-width: 900px) {
+  header { padding: 20px 28px; }
+  header .brand-row,
+  header .nav-container,
+  header .load-message {
+    max-width: 860px;
+    width: 100%;
+  }
+  header .nav-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+  header .select-group { min-width: 0; }
+  header .select-group select { min-width: 0; }
+  main { padding: 40px 24px; }
+  main .card {
+    max-width: 700px;
+    padding: 52px 60px;
+  }
+  main .card .input-section,
+  main .card .actions {
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  main .card .meaning-badge { margin-bottom: 36px; }
+}
