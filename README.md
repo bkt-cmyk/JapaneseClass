@@ -4,7 +4,7 @@
 
 A small, browser-based Japanese practice site with Thai translations. It has two exercises: writing kanji in stroke order and typing vocabulary readings.
 
-**Site:** https://bkt-cmyk.github.io/JapaneseClass/
+**Site:** https://japaneseclass.vercel.app/
 
 ## Practice modes
 
