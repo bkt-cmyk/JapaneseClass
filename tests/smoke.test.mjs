@@ -162,7 +162,7 @@ function mockDocument() {
   };
 }
 
-function createKanjiApp({ failData = false, missingWriter = false } = {}) {
+function createKanjiApp({ failData = false, missingWriter = false, storage } = {}) {
   const document = mockDocument();
   let lastChar = null;
   let quizCallbacks = null;
@@ -170,7 +170,7 @@ function createKanjiApp({ failData = false, missingWriter = false } = {}) {
   const windowHandlers = new Map();
   const window = { addEventListener(type, cb) { windowHandlers.set(type, cb); } };
   const sandbox = {
-    document, window, console,
+    document, window, console, localStorage: storage,
     fetch: async () => {
       if (failData) throw new Error('offline');
       return { ok: true, json: async () => load('data/kanji.json') };
@@ -218,6 +218,31 @@ test('kanji drawing starts, and only completed words count as progress', async (
   assert.equal(get('progress-count').innerText, '1/5', 'switching sets retains session progress');
 });
 
+
+test('kanji defaults to manual advance, finishes without looping, and restores saved progress', async () => {
+  const memory = new Map();
+  const storage = {
+    getItem(key) { return memory.get(key) || null; },
+    setItem(key, value) { memory.set(key, value); }
+  };
+  const app = createKanjiApp({ storage });
+  await app.window.onload();
+  assert.equal(app.document.getElementById('auto-next').checked, false);
+  app.quiz().onComplete();
+  assert.equal(app.document.getElementById('progress-count').innerText, '1/5');
+  const restored = createKanjiApp({ storage });
+  await restored.window.onload();
+  assert.equal(restored.document.getElementById('progress-count').innerText, '1/5');
+  vm.runInContext('loadWord(4)', restored.context);
+  vm.runInContext('nextInSet()', restored.context);
+  assert.equal(restored.document.getElementById('set-summary').hidden, false);
+  assert.equal(restored.document.getElementById('next-btn').disabled, true);
+  vm.runInContext('restartSet()', restored.context);
+  assert.equal(restored.document.getElementById('progress-count').innerText, '0/5');
+  vm.runInContext('toggleAutoNext(true)', restored.context);
+  assert.equal(JSON.parse(memory.get('japaneseclass.kanji.v1')).autoNext, true);
+});
+
 test('desktop resize with unchanged canvas size does not restart the quiz', async () => {
   const app = createKanjiApp();
   await app.window.onload();
@@ -246,11 +271,11 @@ test('kanji reports fallback when its lesson file cannot load', async () => {
   assert.match(app.document.getElementById('load-message').textContent, /ชุดตัวอย่าง/);
 });
 
-function createVocabularyApp({ failData = false } = {}) {
+function createVocabularyApp({ failData = false, storage } = {}) {
   const document = mockDocument();
   const window = {};
   const sandbox = {
-    document, window, console,
+    document, window, console, localStorage: storage,
     fetch: async () => {
       if (failData) throw new Error('offline');
       return { ok: true, json: async () => load('data/vocabulary.json') };
@@ -277,6 +302,75 @@ test('vocabulary checks readings and permits retrying a wrong answer', async () 
   assert.equal(get('answer-input').readOnly, true);
   assert.match(get('answer-status').innerText, /ถูกต้อง/);
   assert.equal(get('answer-input').disabled, false);
+});
+
+
+test('vocabulary shows saved progress, supports wrong-answer review, and ends without looping', async () => {
+  const memory = new Map();
+  const storage = {
+    getItem(key) { return memory.get(key) || null; },
+    setItem(key, value) { memory.set(key, value); }
+  };
+  const app = createVocabularyApp({ storage });
+  await app.window.onload();
+  const get = id => app.document.getElementById(id);
+  assert.equal(get('progress-count').innerText, '0/46');
+  assert.equal(get('word-position').innerText, 'ข้อ 1/46');
+  get('answer-input').value = 'ちがう';
+  vm.runInContext('checkAnswer()', app.context);
+  assert.equal(get('review-btn').disabled, false);
+  vm.runInContext('toggleReview()', app.context);
+  assert.equal(get('word-position').innerText, 'ทบทวนข้อ 1/1');
+  get('answer-input').value = 'みます';
+  vm.runInContext('checkAnswer()', app.context);
+  assert.equal(get('progress-count').innerText, '1/1');
+  assert.equal(get('answer-input').className, 'correct');
+  vm.runInContext('nextInSet()', app.context);
+  assert.equal(get('set-summary').hidden, false);
+  vm.runInContext('toggleReview()', app.context);
+  vm.runInContext('loadWord(45)', app.context);
+  vm.runInContext('nextInSet()', app.context);
+  assert.equal(get('set-summary').hidden, false);
+  assert.equal(get('check-btn').disabled, true);
+  const restored = createVocabularyApp({ storage });
+  await restored.window.onload();
+  assert.equal(restored.document.getElementById('progress-count').innerText, '1/46');
+  assert.equal(JSON.parse(memory.get('japaneseclass.vocabulary.v1')).wrong['คำศัพท์บทที่ 26'].length, 0);
+});
+
+test('vocabulary accepts normalized placeholder readings without changing Japanese sounds', async () => {
+  const app = createVocabularyApp();
+  await app.window.onload();
+  const examples = load('data/vocabulary.json')['คำศัพท์บทที่ 28'];
+  const index = examples.findIndex(word => word.data1 === '～か');
+  assert.ok(index >= 0);
+  vm.runInContext('loadSet("คำศัพท์บทที่ 28")', app.context);
+  vm.runInContext('loadWord(' + index + ')', app.context);
+  const input = app.document.getElementById('answer-input');
+  input.value = ' か ';
+  vm.runInContext('checkAnswer()', app.context);
+  assert.equal(input.className, 'correct');
+  vm.runInContext('loadWord(' + index + ')', app.context);
+  input.value = 'き';
+  vm.runInContext('checkAnswer()', app.context);
+  assert.equal(input.className, 'wrong');
+});
+
+test('practice pages expose progress, summaries, and mobile-friendly help', () => {
+  const kanji = file('pages/kanji.html');
+  const vocabulary = file('pages/vocabulary.html');
+  for (const html of [kanji, vocabulary]) {
+    assert.match(html, /id="set-summary"/);
+    assert.match(html, /id="progress-count"/);
+    assert.match(html, /id="progress-track"/);
+    assert.match(html, /rel="canonical"/);
+  }
+  assert.match(kanji, /id="auto-next"/);
+  assert.match(kanji, /ชุดคันจิ/);
+  assert.match(vocabulary, /id="review-btn"/);
+  assert.match(vocabulary, /class="keyboard-help"/);
+  assert.doesNotMatch(vocabulary, /autofocus/);
+  assert.match(file('assets/css/theme.css'), /position: static/);
 });
 
 test('vocabulary fallback is clearly disclosed', async () => {

@@ -20,8 +20,8 @@
   <meta property="og:image:alt" content="JapaneseClass — เว็บฝึกคันจิและคำศัพท์ภาษาญี่ปุ่น">
   <meta name="twitter:card" content="summary_large_image">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/theme.css?v=20261106-theme">
-  <link rel="stylesheet" href="../assets/css/vocabulary.css?v=20261106-theme">
+  <link rel="stylesheet" href="../assets/css/theme.css?v=20261107-practice">
+  <link rel="stylesheet" href="../assets/css/vocabulary.css?v=20261107-practice">
 </head>
 <body class="vocabulary-page">
   <header class="site-header">
@@ -31,6 +31,15 @@
       <h1 class="brand-text">ฝึกพิมพ์คำศัพท์</h1>
     </div>
     <p id="load-message" class="load-message" role="status" aria-live="polite" hidden></p>
+    <div class="progress-row">
+      <span class="progress-label" id="progress-label">ตอบถูก (บันทึกในเครื่อง)</span>
+      <div class="progress-track" id="progress-track" role="progressbar"
+           aria-label="จำนวนคำศัพท์ที่ตอบถูก" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <span class="progress-count" id="progress-count">0/0</span>
+      <span class="word-position" id="word-position">ข้อ 0/0</span>
+    </div>
     <div class="nav-container">
       <div class="select-group">
         <label for="setSelect">ชุดคำศัพท์</label>
@@ -41,6 +50,10 @@
         <select id="kanjiSelect" onchange="loadWord(this.value)"></select>
       </div>
     </div>
+    <div class="review-controls">
+      <button type="button" id="review-btn" onclick="toggleReview()" disabled>ทบทวนคำที่เคยผิด (0)</button>
+      <span class="local-note">บันทึกความก้าวหน้าเฉพาะในเครื่องนี้</span>
+    </div>
   </header>
   <main class="site-main">
     <section class="card" id="practice-card" aria-label="แบบฝึกพิมพ์คำศัพท์">
@@ -49,15 +62,30 @@
         <span class="reading-hint">พิมพ์คำอ่านภาษาญี่ปุ่นของคำนี้</span>
       </div>
       <div class="input-section">
-        <input type="text" id="answer-input" lang="ja" aria-label="พิมพ์คำอ่านภาษาญี่ปุ่น" autocomplete="off" placeholder="答えは？" autofocus>
+        <input type="text" id="answer-input" lang="ja" aria-label="พิมพ์คำอ่านภาษาญี่ปุ่น" autocomplete="off" placeholder="答えは？">
         <div id="revealed-hint" class="hidden-hint" role="status" aria-live="polite"></div>
       </div>
       <div class="status-chip state-neutral" id="answer-status" role="status" aria-live="polite">พร้อมแล้วหรือยัง?</div>
       <div class="actions">
         <button class="btn-check" id="check-btn" onclick="handleMainAction()">ตรวจสอบคำตอบ (Enter)</button>
         <button class="btn-hint" onclick="showHint()">筆 เฉลย</button>
-        <button class="btn-next" onclick="nextInSet()">ข้ามคำนี้ →</button>
+        <button class="btn-next" id="next-btn" onclick="nextInSet()">ข้ามคำนี้ →</button>
       </div>
+      <section id="set-summary" class="set-summary" aria-live="polite" hidden>
+        <h2>ฝึกถึงท้ายชุดแล้ว</h2>
+        <p id="summary-text"></p>
+        <div class="summary-actions">
+          <button type="button" onclick="restartSet()">เริ่มชุดใหม่ (ล้าง Progress)</button>
+          <button type="button" onclick="chooseSet()">เลือกชุดอื่น</button>
+        </div>
+      </section>
+      <details class="keyboard-help">
+        <summary>วิธีเปิดแป้นพิมพ์ภาษาญี่ปุ่น</summary>
+        <p><strong>iPhone / iPad:</strong> ไปที่ Settings → General → Keyboard → Keyboards แล้วเพิ่ม Japanese</p>
+        <p><strong>Android:</strong> เปิดการตั้งค่าแป้นพิมพ์ (เช่น Gboard) → Languages แล้วเพิ่ม Japanese</p>
+        <p><strong>Windows:</strong> ไปที่ Settings → Time &amp; language → Language &amp; region แล้วเพิ่ม Japanese</p>
+        <p><strong>Mac:</strong> ไปที่ System Settings → Keyboard → Text Input แล้วเพิ่ม Japanese</p>
+      </details>
       <p class="practice-description">ฝึกคำศัพท์ภาษาญี่ปุ่นจากความหมายภาษาไทย พิมพ์คำอ่านแล้วตรวจคำตอบได้ทันที พร้อมเฉลยและชุดคำศัพท์บทที่ 26–28</p>
     </section>
   </main>
@@ -65,6 +93,6 @@
     <div>© 2026 JapaneseClass. All rights reserved.</div>
     <div>ฝึกภาษาญี่ปุ่นด้วยตัวเอง</div>
   </footer>
-  <script src="../assets/js/vocabulary.js?v=20261106-theme"></script>
+  <script src="../assets/js/vocabulary.js?v=20261107-practice"></script>
 </body>
 </html>

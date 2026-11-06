@@ -25,6 +25,28 @@ const defaultData = {
         let autoAdvanceTimer;
         let lastWriterSize = 0;
         const completedBySet = new Map();
+        const STORAGE_KEY = 'japaneseclass.kanji.v1';
+        const savedState = readProgress();
+        let lastIndexBySet = {};
+        let autoNextEnabled = false;
+        let quizGeneration = 0;
+        function readProgress() {
+            try {
+                if (typeof localStorage === 'undefined') return {};
+                const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                return data && typeof data === 'object' ? data : {};
+            } catch (_) { return {}; }
+        }
+        function saveProgress() {
+            try {
+                if (typeof localStorage === 'undefined') return;
+                const completed = {};
+                for (const [name, indexes] of completedBySet) completed[name] = [...indexes];
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    selectedSet: currentSetName, lastIndexBySet, completed, autoNext: autoNextEnabled
+                }));
+            } catch (_) { /* Local storage may be disabled. */ }
+        }
 
         function setLoadMessage(message) {
             const element = document.getElementById('load-message');
@@ -79,37 +101,61 @@ const defaultData = {
         function initApp() {
             const setSelect = document.getElementById('setSelect');
             const setNames = Object.keys(kanjiDataSets);
+            const savedIndexes = savedState.lastIndexBySet;
+            lastIndexBySet = savedIndexes && typeof savedIndexes === 'object' && !Array.isArray(savedIndexes)
+                ? savedIndexes : {};
+            const savedCompleted = savedState.completed && typeof savedState.completed === 'object'
+                ? savedState.completed : {};
+            for (const name of setNames) {
+                const indexes = Array.isArray(savedCompleted[name]) ? savedCompleted[name] : [];
+                completedBySet.set(name, new Set(indexes.filter(i =>
+                    Number.isInteger(i) && i >= 0 && i < kanjiDataSets[name].length
+                )));
+            }
+            autoNextEnabled = savedState.autoNext === true;
+            document.getElementById('auto-next').checked = autoNextEnabled;
             setSelect.innerHTML = setNames.map(name => {
-                const currentSet = kanjiDataSets[name];
-                const charList = currentSet.map(item => item.char);
-                const charString = charList.join(' ');
-                return `<option value="${name}">${name}: ${charString}</option>`;
+                const charString = kanjiDataSets[name].map(item => item.char).join(' ');
+                return '<option value="' + name + '">' + name + ': ' + charString + '</option>';
             }).join('');
-            if (setNames.length > 0) loadSet(setNames[0]);
+            if (setNames.length > 0) {
+                loadSet(setNames.includes(savedState.selectedSet) ? savedState.selectedSet : setNames[0]);
+            }
         }
 
         function loadSet(setName) {
+            if (!Object.prototype.hasOwnProperty.call(kanjiDataSets, setName)) return;
             currentSetName = setName;
             if (!completedBySet.has(setName)) completedBySet.set(setName, new Set());
+            document.getElementById('setSelect').value = setName;
             const kanjiSelect = document.getElementById('kanjiSelect');
             kanjiSelect.innerHTML = kanjiDataSets[setName].map((item, i) =>
-                `<option value="${i}">${item.char} - ${item.mean}</option>`
+                '<option value="' + i + '">' + item.char + ' - ' + item.mean + '</option>'
             ).join('');
-            loadWord(0);
+            const index = Number(lastIndexBySet[setName]);
+            loadWord(Number.isInteger(index) && index >= 0 &&
+                index < kanjiDataSets[setName].length ? index : 0);
         }
 
         function loadWord(index) {
             clearTimeout(autoAdvanceTimer);
-            currentWordIdx = parseInt(index);
+            const idx = Number(index);
+            const set = kanjiDataSets[currentSetName];
+            currentWordIdx = Number.isInteger(idx) && idx >= 0 && idx < set.length ? idx : 0;
             currentCharInWordIdx = 0;
+            quizGeneration++;
             isWordComplete = false;
-            const data = kanjiDataSets[currentSetName][currentWordIdx];
-
+            const data = set[currentWordIdx];
             document.getElementById('display-meaning').innerText = data.mean;
             document.getElementById('display-reading').innerText = data.data1;
-            document.getElementById('kanjiSelect').value = index;
-            document.getElementById('next-btn').innerHTML = 'ข้ามคำนี้ <span>→</span>';
-
+            document.getElementById('kanjiSelect').value = String(currentWordIdx);
+            const next = document.getElementById('next-btn');
+            next.innerHTML = 'ข้ามคำนี้ <span>→</span>';
+            next.disabled = false;
+            document.getElementById('prev-btn').disabled = currentWordIdx === 0;
+            document.getElementById('set-summary').hidden = true;
+            lastIndexBySet[currentSetName] = currentWordIdx;
+            saveProgress();
             updateProgress();
             setupWriterForChar();
         }
@@ -188,6 +234,7 @@ const defaultData = {
 
         function startQuiz() {
             if (!writer) return;
+            const generation = quizGeneration;
             const data = kanjiDataSets[currentSetName][currentWordIdx];
             const totalChars = data.char.length;
 
@@ -198,12 +245,13 @@ const defaultData = {
 
             writer.quiz({
                 onMistake: () => {
-                    setStatus("ผิด! ลองใหม่อีกครั้ง", 'error');
+                    if (generation === quizGeneration) setStatus("ผิด! ลองใหม่อีกครั้ง", 'error');
                 },
                 onCorrectStroke: () => {
-                    setStatus("ถูกต้อง! ต่อไป...", 'success');
+                    if (generation === quizGeneration) setStatus("ถูกต้อง! ต่อไป...", 'success');
                 },
                 onComplete: () => {
+                    if (generation !== quizGeneration) return;
                     let nextIdx = currentCharInWordIdx + 1;
                     while (nextIdx < data.char.length && !/[\u4e00-\u9faf]/.test(data.char[nextIdx])) {
                         nextIdx++;
@@ -212,6 +260,7 @@ const defaultData = {
                     if (nextIdx < data.char.length) {
                         setStatus("ยอดเยี่ยม! ไปตัวถัดไป...", 'info');
                         setTimeout(() => {
+                            if (generation !== quizGeneration) return;
                             currentCharInWordIdx = nextIdx;
                             setupWriterForChar();
                         }, 800);
@@ -227,6 +276,7 @@ const defaultData = {
             isWordComplete = true;
             completedBySet.get(currentSetName)?.add(currentWordIdx);
             updateProgress();
+            saveProgress();
             setStatus("เขียนครบทั้งคำแล้ว ✓", 'success');
             document.getElementById('next-btn').innerHTML = 'คำถัดไป <span>→</span>';
 
@@ -240,22 +290,41 @@ const defaultData = {
                 }
             }, 0);
 
-            const set = kanjiDataSets[currentSetName];
-            if (set.length > 1) {
-                autoAdvanceTimer = setTimeout(nextInSet, 1000);
-            }
+            if (autoNextEnabled) autoAdvanceTimer = setTimeout(nextInSet, 1300);
         }
 
         function prevInSet() {
-            const set = kanjiDataSets[currentSetName];
-            currentWordIdx = (currentWordIdx - 1 + set.length) % set.length;
-            loadWord(currentWordIdx);
+            if (currentWordIdx > 0) loadWord(currentWordIdx - 1);
         }
-
         function nextInSet() {
             const set = kanjiDataSets[currentSetName];
-            currentWordIdx = (currentWordIdx + 1) % set.length;
-            loadWord(currentWordIdx);
+            if (currentWordIdx >= set.length - 1) finishSet();
+            else loadWord(currentWordIdx + 1);
+        }
+        function finishSet() {
+            clearTimeout(autoAdvanceTimer);
+            const completed = completedBySet.get(currentSetName)?.size || 0;
+            const total = kanjiDataSets[currentSetName].length;
+            document.getElementById('summary-text').textContent =
+                'เขียนสำเร็จ ' + completed + '/' + total + ' คำ (บันทึกในเครื่องนี้)';
+            document.getElementById('set-summary').hidden = false;
+            document.getElementById('next-btn').disabled = true;
+            setStatus('ถึงท้ายชุดแล้ว ✓', 'info');
+            saveProgress();
+        }
+        function restartSet() {
+            completedBySet.set(currentSetName, new Set());
+            lastIndexBySet[currentSetName] = 0;
+            loadWord(0);
+        }
+        function chooseSet() { document.getElementById('setSelect').focus(); }
+        function toggleAutoNext(checked) {
+            autoNextEnabled = checked === true;
+            clearTimeout(autoAdvanceTimer);
+            if (autoNextEnabled && isWordComplete && document.getElementById('set-summary').hidden) {
+                autoAdvanceTimer = setTimeout(nextInSet, 1300);
+            }
+            saveProgress();
         }
 
         window.onload = fetchKanjiData;

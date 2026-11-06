@@ -23,8 +23,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/theme.css?v=20261106-theme">
-    <link rel="stylesheet" href="../assets/css/kanji.css?v=20261106-theme">
+    <link rel="stylesheet" href="../assets/css/theme.css?v=20261107-practice">
+    <link rel="stylesheet" href="../assets/css/kanji.css?v=20261107-practice">
 </head>
 
 <body class="kanji-page">
@@ -37,7 +37,7 @@
         </div>
         <p id="load-message" class="load-message" role="status" aria-live="polite" hidden></p>
         <div class="progress-row">
-            <span class="progress-label">สำเร็จในรอบนี้</span>
+            <span class="progress-label">เขียนสำเร็จ (บันทึกในเครื่อง)</span>
             <div class="progress-track" id="progress-track" role="progressbar" aria-label="จำนวนคำที่เขียนสำเร็จในรอบนี้" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
@@ -45,7 +45,7 @@
         </div>
         <div class="nav-container">
             <div class="select-group">
-                <label for="setSelect">ชุดคำศัพท์</label>
+                <label for="setSelect">ชุดคันจิ</label>
                 <select id="setSelect" onchange="loadSet(this.value)"></select>
             </div>
             <div class="select-group">
@@ -66,8 +66,15 @@
 
             <div class="status-chip state-neutral" id="status-msg" role="status" aria-live="polite">พร้อมแล้วหรือยัง?</div>
 
+            <div class="practice-toolbar">
+                <label class="toggle-label" for="auto-next">
+                    <input type="checkbox" id="auto-next" onchange="toggleAutoNext(this.checked)">
+                    เลื่อนคำอัตโนมัติ
+                </label>
+                <span class="local-note">ปิดเป็นค่าเริ่มต้น</span>
+            </div>
             <div class="actions">
-                <button class="btn-prev" onclick="prevInSet()" aria-label="คำก่อนหน้า">
+                <button class="btn-prev" id="prev-btn" onclick="prevInSet()" aria-label="คำก่อนหน้า">
                     <span>←</span>
                 </button>
                 <button class="btn-hint" onclick="if (writer && typeof writer.animateCharacter === 'function') writer.animateCharacter()">
@@ -77,6 +84,14 @@
                     ข้ามคำนี้ <span>→</span>
                 </button>
             </div>
+            <section id="set-summary" class="set-summary" aria-live="polite" hidden>
+                <h2>ฝึกถึงท้ายชุดแล้ว</h2>
+                <p id="summary-text"></p>
+                <div class="summary-actions">
+                    <button type="button" onclick="restartSet()">เริ่มชุดใหม่ (ล้าง Progress)</button>
+                    <button type="button" onclick="chooseSet()">เลือกชุดอื่น</button>
+                </div>
+            </section>
             <p class="practice-description">ฝึกเขียนคันจิ JLPT N5–N4 ตามลำดับขีด พร้อมคำอ่าน ความหมายภาษาไทย และตัวอย่างลำดับขีด เลือกบทเรียนแล้วเริ่มฝึกได้ทันที</p>
         </div>
     </main>
@@ -86,7 +101,7 @@
     <div>ฝึกภาษาญี่ปุ่นด้วยตัวเอง</div>
   </footer>
 
-    <script src="../assets/js/kanji.js?v=20261106-theme"></script>
+    <script src="../assets/js/kanji.js?v=20261107-practice"></script>
 
 </body>
 

@@ -8,10 +8,14 @@ A small, browser-based Japanese practice site with Thai translations. It has two
 
 ## Practice modes
 
-- **Kanji:** Draw characters in the correct stroke order. See the reading, Thai meaning, stroke animation, and a count of words completed in the current page session.
-- **Vocabulary:** Given a Thai meaning, type the matching Japanese reading. Check your answer, reveal it, or skip ahead.
+- **Kanji:** Draw characters in stroke order, with Thai meanings, readings, and stroke animations. Completed words and your current lesson position are saved in this browser. Moving to the next word is manual by default; automatic advance is an optional toggle.
+- **Vocabulary:** Type Japanese readings from Thai meanings, check answers, reveal hints, and review words you got wrong. The page displays your current position, correct-answer progress, and an end-of-set summary. Common full-width typing variants are normalized, and placeholder readings such as `～か` also accept `か`.
 
 The kanji dataset contains 365 entries across 73 N5/N4 lesson sets. The vocabulary dataset currently covers lessons 26–28 (144 words).
+
+## Practice progress and privacy
+
+Practice progress, the last selected lesson, and vocabulary mistakes are saved in your browser using `localStorage`. No account or server-side tracking is required. Progress is not synced across devices and may be cleared if you delete site data. At the end of a set, **Start over** clears the correct-answer progress for that lesson. Vocabulary mistake history stays available for review until you answer those words correctly in review mode.
 
 ## Run locally
 
@@ -26,7 +30,7 @@ Then open http://localhost:8000. Opening the HTML files with `file://` may preve
 ## Project layout
 
 ```text
-index.html                     Home page (GitHub Pages entry point)
+index.html                     Home page (Vercel static-site entry point)
 pages/                         Kanji and vocabulary exercises
 assets/css/                    Shared theme and page styles
 assets/js/                     Exercise logic
@@ -44,4 +48,4 @@ All three pages share the same kanji-inspired design system in `assets/css/theme
 node --test tests/smoke.test.mjs
 ```
 
-The tests check internal file links, lesson data, script syntax, progress counting, offline fallback, and basic practice-page behavior. They are not a substitute for testing in a real browser.
+The tests check internal file links, lesson data, script syntax, progress persistence, answer normalization, wrong-answer review, end-of-set behavior, offline fallback, and basic practice-page behavior. They are not a substitute for testing in a real browser.

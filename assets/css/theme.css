@@ -184,6 +184,64 @@ button, input, select { font: inherit; }
 .actions button:disabled { cursor: not-allowed; opacity: .55; }
 .btn-hint { background: #eaf6f4; color: var(--brand-deep); box-shadow: 0 4px 0 #c7e6e1; }
 .btn-next { background: var(--pop); color: #fff; box-shadow: 0 4px 0 var(--pop-deep); }
+.progress-row {
+  max-width: 460px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.progress-label { color: var(--ink-soft); font-size: .72rem; font-weight: 700; white-space: nowrap; }
+.progress-track {
+  flex: 1;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--sand);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--brand);
+  transition: width .3s ease;
+}
+.progress-count {
+  min-width: 34px;
+  text-align: right;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.practice-toolbar {
+  display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
+  gap: 8px 14px; margin: 0 0 16px;
+}
+.toggle-label { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; font-size: .84rem; }
+.toggle-label input { width: 18px; height: 18px; accent-color: var(--brand-deep); }
+.local-note { color: var(--ink-soft); font-size: .73rem; }
+.set-summary {
+  margin: 18px 0 0; padding: 18px; border: 2px solid var(--line);
+  border-radius: 20px; background: #fffdf7; text-align: center;
+}
+.set-summary[hidden] { display: none; }
+.set-summary h2 { margin: 0 0 8px; font-size: 1.13rem; }
+.set-summary p { margin: 0 0 12px; color: var(--ink-soft); font-size: .88rem; }
+.summary-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
+.summary-actions button, .review-controls button {
+  border: 2px solid var(--line); border-radius: 999px;
+  padding: 9px 14px; background: var(--card); color: var(--brand-deep);
+  font: inherit; font-size: .83rem; font-weight: 700; cursor: pointer;
+}
+.summary-actions button:hover, .review-controls button:hover { background: #eaf6f4; }
+@media (max-width: 719px) {
+  .kanji-page .site-header, .vocabulary-page .site-header {
+    position: static; padding: 12px 14px 8px;
+  }
+  .kanji-page .brand-row, .vocabulary-page .brand-row { margin-bottom: 8px; }
+}
 .practice-description {
   color: var(--ink-soft);
   font-size: .78rem;
