@@ -72,6 +72,22 @@ test('SEO metadata, crawlable pages, sitemap and social image are consistent', (
   }
 });
 
+
+test('home page clearly introduces practice modes and how to begin', () => {
+  const home = file('index.html');
+  const css = file('assets/css/home.css');
+  assert.ok(home.includes('<h1 id="page-title">ฝึกคันจิและคำศัพท์ภาษาญี่ปุ่นออนไลน์</h1>'));
+  assert.ok(home.includes('JLPT N5–N4'));
+  assert.ok(home.includes('คำศัพท์บทที่ 26–28'));
+  assert.ok(home.includes('เริ่มฝึกเขียนคันจิ →'));
+  assert.ok(home.includes('เริ่มฝึกคำศัพท์ →'));
+  assert.ok(home.includes('เริ่มฝึกได้ใน 3 ขั้นตอน'));
+  assert.equal((home.match(/<li>/g) || []).length, 3);
+  assert.equal((home.match(/class="mode-level"/g) || []).length, 2);
+  assert.ok(css.includes('.home-howto'));
+  assert.ok(css.includes('.howto-list'));
+});
+
 test('lesson data is valid and unchanged', () => {
   const kanji = load('data/kanji.json');
   const vocabulary = load('data/vocabulary.json');
